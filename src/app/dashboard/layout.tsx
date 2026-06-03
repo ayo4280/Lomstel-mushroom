@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { supabase } from '@/utils/supabase/client';
-import { LayoutDashboard, Boxes, FileText, Settings, LogOut, User, Loader2, Bot, Store, ShoppingCart, Vault, Sprout, MapPin, UserCircle } from 'lucide-react';
+import { LayoutDashboard, Boxes, FileText, Settings, LogOut, User, Loader2, Bot, Store, ShoppingCart, Vault, Sprout, MapPin, UserCircle, Truck } from 'lucide-react';
 
 export default function DashboardLayout({
   children,
@@ -130,6 +130,10 @@ export default function DashboardLayout({
                 <Link href="/dashboard/tracking" className={`nav-link ${pathname === '/dashboard/tracking' ? 'active' : ''}`}>
                   <MapPin size={20} />
                   Tracking
+                </Link>
+                <Link href="/dashboard/logistics" className={`nav-link ${pathname === '/dashboard/logistics' ? 'active' : ''}`}>
+                  <Truck size={20} />
+                  Logistics
                 </Link>
               </>
             )}
