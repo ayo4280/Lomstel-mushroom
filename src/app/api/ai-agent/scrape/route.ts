@@ -19,7 +19,10 @@ async function runApifyScraperBackground(taskId: string) {
             'organic food distributors London UK', 
             'mushroom importers New York USA', 
             'health food supermarkets Berlin Germany',
-            'restaurants Lagos Nigeria'
+            'restaurants Lagos Nigeria',
+            'B2B Commercial Aggregators',
+            'On-Demand On-App Aggregators in Nigeria',
+            'Dedicated Agritech & Direct-from-Farm Aggregators'
           ],
           maxCrawledPlacesPerSearch: 3,
           language: 'en',
