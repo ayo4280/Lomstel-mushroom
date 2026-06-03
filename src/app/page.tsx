@@ -20,12 +20,63 @@ export default function LandingPage() {
         zIndex: 100,
         borderBottom: '1px solid var(--color-earth-200)'
       }}>
-        <div style={{ fontSize: '1.5rem', fontWeight: 900, color: 'var(--color-forest-700)', letterSpacing: '-0.03em' }}>
+        {/* Nav Styles */}
+        <style>{`
+          @keyframes logo-shine {
+            0% { background-position: 200% center; }
+            100% { background-position: -200% center; }
+          }
+          .brand-logo {
+            font-size: 1.8rem;
+            font-weight: 900;
+            letter-spacing: -0.04em;
+            background: linear-gradient(
+              120deg,
+              var(--color-forest-700) 20%,
+              #4ADE80 40%,
+              #FFD700 50%,
+              #4ADE80 60%,
+              var(--color-forest-700) 80%
+            );
+            background-size: 200% auto;
+            color: transparent;
+            -webkit-background-clip: text;
+            background-clip: text;
+            animation: logo-shine 6s linear infinite;
+            text-shadow: 0 4px 15px rgba(75, 127, 82, 0.2);
+            text-decoration: none;
+          }
+          .nav-link {
+            font-weight: 700;
+            color: var(--color-earth-700);
+            text-decoration: none;
+            position: relative;
+            transition: color 0.3s ease;
+            font-size: 1.05rem;
+          }
+          .nav-link:hover {
+            color: var(--color-forest-600);
+          }
+          .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -4px;
+            left: 0;
+            background-color: var(--color-forest-500);
+            transition: width 0.3s ease;
+          }
+          .nav-link:hover::after {
+            width: 100%;
+          }
+        `}</style>
+        <Link href="/" className="brand-logo">
           Lomstel Farms
-        </div>
+        </Link>
         <nav style={{ display: 'flex', gap: '2rem', alignItems: 'center' }}>
-          <a href="#features" style={{ fontWeight: 600, color: 'var(--color-earth-700)', textDecoration: 'none' }}>Why Us</a>
-          <a href="#products" style={{ fontWeight: 600, color: 'var(--color-earth-700)', textDecoration: 'none' }}>Products</a>
+          <a href="#features" className="nav-link">Why Us</a>
+          <a href="#products" className="nav-link">Products</a>
           <Link href="/login" className="btn-primary" style={{ textDecoration: 'none' }}>
             Command Center Login
           </Link>
