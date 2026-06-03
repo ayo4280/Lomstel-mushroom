@@ -203,3 +203,48 @@ p {
   color: white;
   box-shadow: 0 4px 12px rgba(75, 127, 82, 0.2);
 }
+
+/* ─── Animated Gradient Text (Hero Subtitle) ─── */
+@keyframes gradient-background-1 {
+  0%, 16.667%, 100% { opacity: 1; }
+  33.333%, 83.333% { opacity: 0; }
+}
+@keyframes gradient-background-2 {
+  0%, 16.667%, 100% { opacity: 0; }
+  33.333%, 50%     { opacity: 1; }
+  66.667%, 83.333% { opacity: 0; }
+}
+@keyframes gradient-background-3 {
+  0%, 50%, 100%    { opacity: 0; }
+  66.667%, 83.333% { opacity: 1; }
+}
+@keyframes gradient-foreground-1 {
+  0%, 16.667%, 100% { opacity: 1; }
+  33.333%, 83.333% { opacity: 0; }
+}
+@keyframes gradient-foreground-2 {
+  0%, 16.667%, 100% { opacity: 0; }
+  33.333%, 50%     { opacity: 1; }
+  66.667%, 83.333% { opacity: 0; }
+}
+@keyframes gradient-foreground-3 {
+  0%, 50%, 100%    { opacity: 0; }
+  66.667%, 83.333% { opacity: 1; }
+}
+
+/* Animation utilities */
+.animate-gradient-background-1 { animation: gradient-background-1 8s infinite; }
+.animate-gradient-background-2 { animation: gradient-background-2 8s infinite; }
+.animate-gradient-background-3 { animation: gradient-background-3 8s infinite; }
+.animate-gradient-foreground-1 { animation: gradient-foreground-1 8s infinite; }
+.animate-gradient-foreground-2 { animation: gradient-foreground-2 8s infinite; }
+.animate-gradient-foreground-3 { animation: gradient-foreground-3 8s infinite; }
+
+/* Gradient color pairs — warm earthy palette for Lomstel */
+.from-gradient-1-start { --tw-gradient-from: #FFD700; }
+.to-gradient-1-end    { --tw-gradient-to: #FFA500; }
+.from-gradient-2-start { --tw-gradient-from: #74C69D; }
+.to-gradient-2-end    { --tw-gradient-to: #4B7F52; }
+.from-gradient-3-start { --tw-gradient-from: #FFA07A; }
+.to-gradient-3-end    { --tw-gradient-to: #C85A3C; }
+
