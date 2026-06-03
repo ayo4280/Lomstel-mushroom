@@ -27,9 +27,9 @@ export function HeroSubtitleText() {
                 fontSize: "clamp(1.5rem, 4vw, 2.8rem)",
                 fontWeight: 900,
                 letterSpacing: "-0.02em",
-                color: "#FF3333", /* Bright Red */
-                textShadow: "0 2px 10px rgba(255, 51, 51, 0.6), 0 4px 20px rgba(0,0,0,0.8)",
-                animationName: `red-pulse-${i + 1}`,
+                color: "#FFFFFF", /* Glowing White */
+                textShadow: "0 0 15px rgba(255, 255, 255, 0.8), 0 4px 20px rgba(0,0,0,0.8)",
+                animationName: `pulse-${i + 1}`,
                 animationDuration: "9s",
                 animationTimingFunction: "ease-in-out",
                 animationIterationCount: "infinite",
@@ -43,18 +43,18 @@ export function HeroSubtitleText() {
 
       {/* Keyframe styles injected via style tag for reliable animation */}
       <style>{`
-        @keyframes red-pulse-1 {
-          0%, 100%    { opacity: 1;   transform: scale(1.05); text-shadow: 0 0 20px rgba(255,51,51,0.8), 0 4px 20px rgba(0,0,0,0.8); }
-          33%, 66%    { opacity: 0.4; transform: scale(1);    text-shadow: 0 2px 10px rgba(255,51,51,0.4), 0 4px 20px rgba(0,0,0,0.8); }
+        @keyframes pulse-1 {
+          0%, 100%    { opacity: 1;   transform: scale(1.05); text-shadow: 0 0 25px rgba(255,255,255,1), 0 4px 20px rgba(0,0,0,0.9); }
+          33%, 66%    { opacity: 0.4; transform: scale(1);    text-shadow: 0 0 10px rgba(255,255,255,0.4), 0 4px 20px rgba(0,0,0,0.9); }
         }
-        @keyframes red-pulse-2 {
-          0%, 100%    { opacity: 0.4; transform: scale(1);    text-shadow: 0 2px 10px rgba(255,51,51,0.4), 0 4px 20px rgba(0,0,0,0.8); }
-          33%         { opacity: 1;   transform: scale(1.05); text-shadow: 0 0 20px rgba(255,51,51,0.8), 0 4px 20px rgba(0,0,0,0.8); }
-          66%         { opacity: 0.4; transform: scale(1);    text-shadow: 0 2px 10px rgba(255,51,51,0.4), 0 4px 20px rgba(0,0,0,0.8); }
+        @keyframes pulse-2 {
+          0%, 100%    { opacity: 0.4; transform: scale(1);    text-shadow: 0 0 10px rgba(255,255,255,0.4), 0 4px 20px rgba(0,0,0,0.9); }
+          33%         { opacity: 1;   transform: scale(1.05); text-shadow: 0 0 25px rgba(255,255,255,1), 0 4px 20px rgba(0,0,0,0.9); }
+          66%         { opacity: 0.4; transform: scale(1);    text-shadow: 0 0 10px rgba(255,255,255,0.4), 0 4px 20px rgba(0,0,0,0.9); }
         }
-        @keyframes red-pulse-3 {
-          0%, 33%     { opacity: 0.4; transform: scale(1);    text-shadow: 0 2px 10px rgba(255,51,51,0.4), 0 4px 20px rgba(0,0,0,0.8); }
-          66%, 100%   { opacity: 1;   transform: scale(1.05); text-shadow: 0 0 20px rgba(255,51,51,0.8), 0 4px 20px rgba(0,0,0,0.8); }
+        @keyframes pulse-3 {
+          0%, 33%     { opacity: 0.4; transform: scale(1);    text-shadow: 0 0 10px rgba(255,255,255,0.4), 0 4px 20px rgba(0,0,0,0.9); }
+          66%, 100%   { opacity: 1;   transform: scale(1.05); text-shadow: 0 0 25px rgba(255,255,255,1), 0 4px 20px rgba(0,0,0,0.9); }
         }
       `}</style>
     </div>
