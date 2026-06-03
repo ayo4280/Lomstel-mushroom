@@ -23,7 +23,7 @@ const BASE_PRODUCTS = [
     priceUSD: 13,
     unit: 'per kg',
     badgeColor: '#2d6a4f',
-    icon: '🍂',
+    icon: <img src="/dry-oyster.png" alt="Dry Oyster Mushroom" style={{ width: '80px', height: '80px', objectFit: 'cover', borderRadius: '16px', boxShadow: '0 4px 14px rgba(0,0,0,0.15)', verticalAlign: 'middle' }} />,
     minOrder: 10,
   },
   {
