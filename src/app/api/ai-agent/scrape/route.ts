@@ -23,6 +23,25 @@ const WEB_QUERIES = [
   { query: 'agritech direct-from-farm aggregator platforms Nigeria 2024', type: 'Agritech / Farm Aggregator' },
 ];
 
+// --- CURATED BASELINE: Real Nigerian aggregators always included ---
+const CURATED_AGGREGATORS = [
+  // B2B Commercial Aggregators
+  { business_name: 'Vendease', business_type: 'B2B Commercial Aggregator', contact_info: 'See website', location: 'Lagos, Nigeria', source_url: 'https://vendease.com', status: 'New' },
+  { business_name: 'TradeDepot', business_type: 'B2B Commercial Aggregator', contact_info: 'See website', location: 'Lagos, Nigeria', source_url: 'https://tradedepot.co', status: 'New' },
+  { business_name: 'Omnibiz Africa', business_type: 'B2B Commercial Aggregator', contact_info: 'See website', location: 'Lagos, Nigeria', source_url: 'https://omnibizafrica.com', status: 'New' },
+  { business_name: 'Alerzo', business_type: 'B2B Commercial Aggregator', contact_info: 'See website', location: 'Ibadan, Nigeria', source_url: 'https://alerzo.com', status: 'New' },
+  // On-Demand App Aggregators
+  { business_name: 'Chowdeck', business_type: 'On-Demand App Aggregator', contact_info: 'See website', location: 'Lagos, Nigeria', source_url: 'https://chowdeck.com', status: 'New' },
+  { business_name: 'Glovo Nigeria', business_type: 'On-Demand App Aggregator', contact_info: 'See website', location: 'Lagos, Nigeria', source_url: 'https://glovoapp.com/ng', status: 'New' },
+  { business_name: 'Jumia Food Nigeria', business_type: 'On-Demand App Aggregator', contact_info: 'See website', location: 'Lagos, Nigeria', source_url: 'https://food.jumia.com.ng', status: 'New' },
+  { business_name: 'PocketFood Nigeria', business_type: 'On-Demand App Aggregator', contact_info: 'See website', location: 'Nigeria / Online', source_url: 'https://pocketfood.ng', status: 'New' },
+  // Agritech / Farm Aggregators
+  { business_name: 'Farmcrowdy', business_type: 'Agritech / Farm Aggregator', contact_info: 'See website', location: 'Lagos, Nigeria', source_url: 'https://farmcrowdy.com', status: 'New' },
+  { business_name: 'ThriveAgric', business_type: 'Agritech / Farm Aggregator', contact_info: 'See website', location: 'Abuja, Nigeria', source_url: 'https://thriveagric.com', status: 'New' },
+  { business_name: 'Releaf Africa', business_type: 'Agritech / Farm Aggregator', contact_info: 'See website', location: 'Lagos, Nigeria', source_url: 'https://releaf.co.ng', status: 'New' },
+  { business_name: 'Winich Farms', business_type: 'Agritech / Farm Aggregator', contact_info: 'See website', location: 'Nigeria', source_url: 'https://winichfarms.com', status: 'New' },
+];
+
 async function fetchGoogleMapsLeads(): Promise<any[]> {
   try {
     const startResponse = await fetch(
@@ -132,17 +151,15 @@ async function runAgentBackground(taskId: string) {
       fetchWebSearchLeads(),
     ]);
 
-    let allLeads = [...mapsLeads, ...webLeads];
+    // Always include curated aggregators + live scraped results
+    let allLeads = [...mapsLeads, ...webLeads, ...CURATED_AGGREGATORS];
 
-    // Fallback if both fail
-    if (allLeads.length === 0) {
-      allLeads = [
+    // If maps scraper also failed, add a small fallback for maps-style leads
+    if (mapsLeads.length === 0) {
+      allLeads.push(
         { business_name: 'Nkoyo Restaurant', business_type: 'Restaurant', contact_info: '+234 803 555 0101', location: 'Victoria Island, Lagos', source_url: 'https://maps.google.com', status: 'New' },
         { business_name: 'Shoprite Nigeria', business_type: 'Supermarket', contact_info: '+234 803 555 0104', location: 'Surulere, Lagos', source_url: 'https://maps.google.com', status: 'New' },
-        { business_name: 'Chowdeck Nigeria', business_type: 'On-Demand App Aggregator', contact_info: 'See website', location: 'Nigeria / Online', source_url: 'https://chowdeck.com', status: 'New' },
-        { business_name: 'Farmcrowdy', business_type: 'Agritech / Farm Aggregator', contact_info: 'See website', location: 'Nigeria / Online', source_url: 'https://farmcrowdy.com', status: 'New' },
-        { business_name: 'TradeDepot Nigeria', business_type: 'B2B Commercial Aggregator', contact_info: 'See website', location: 'Nigeria / Online', source_url: 'https://tradedepot.co', status: 'New' },
-      ];
+      );
     }
 
     // Deduplicate within the new batch itself (by name)
