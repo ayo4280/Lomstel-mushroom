@@ -2,10 +2,10 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import crypto from 'crypto';
 
-// Use anon key (correct project) + SECURITY DEFINER RPC to bypass RLS
+// Use service role key to securely bypass RLS
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 );
 
 // POST /api/payments/paystack/webhook
@@ -29,22 +29,19 @@ export async function POST(req: NextRequest) {
     if (event.event === 'charge.success') {
       const { reference, amount, currency } = event.data;
 
-      // Call SECURITY DEFINER RPC — bypasses RLS without needing the service role key
-      const { data, error } = await supabase.rpc('process_payment_webhook', {
-        p_order_id: reference,
-        p_status: 'paid',
-        p_provider: 'paystack',
-        p_reference: reference,
-      });
+      // Direct update using service role key (bypasses RLS)
+      const { error } = await supabase
+        .from('payment_orders')
+        .update({
+          payment_status: 'paid',
+          payment_provider: 'paystack',
+          notes: `Webhook verified reference: ${reference}`
+        })
+        .eq('id', reference);
 
       if (error) {
-        console.error('Failed to update order via RPC:', error);
+        console.error('Failed to update order:', error);
         return NextResponse.json({ error: 'DB update failed' }, { status: 500 });
-      }
-
-      if (data && !data.success) {
-        console.error('RPC returned failure:', data.error);
-        return NextResponse.json({ error: data.error }, { status: 404 });
       }
 
       console.log(`✅ Paystack payment verified: ${reference} - ${currency} ${amount / 100}`);
