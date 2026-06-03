@@ -61,7 +61,7 @@ export async function POST(req: Request) {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          from: 'Lomstel Sales <sales@lomstel.com>', // Note: in real prod, this requires a verified domain
+          from: 'Lomstel Sales <onboarding@resend.dev>', // Resend's default test domain (no verification needed)
           to: ['naturewinsfarm@gmail.com'], // Sending to the admin for demo purposes
           subject: finalSubject,
           html: finalHtml
