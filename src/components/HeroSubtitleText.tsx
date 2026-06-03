@@ -44,10 +44,7 @@ export function HeroSubtitleText() {
 
           </h2>
 
-          <p className="text-center text-white/80 text-lg font-medium mt-2 leading-relaxed">
-            Experience the highest grade wet and dry oyster mushrooms<br />
-            powered by data-driven, precision agriculture.
-          </p>
+
         </div>
       </div>
     </div>
