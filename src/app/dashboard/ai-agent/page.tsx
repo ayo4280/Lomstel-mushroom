@@ -219,7 +219,7 @@ export default function AIAgentDashboard() {
             disabled={isRunning}
             style={{
               display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem',
-              backgroundColor: isRunning ? 'var(--color-earth-200)' : 'var(--color-forest-600)',
+              backgroundColor: isRunning ? 'var(--color-earth-200)' : 'var(--color-forest-500)',
               color: 'white', border: 'none', borderRadius: '10px',
               padding: '0.875rem 1.25rem', fontSize: '0.95rem', fontWeight: 700,
               cursor: isRunning ? 'not-allowed' : 'pointer', transition: 'background 0.2s',
