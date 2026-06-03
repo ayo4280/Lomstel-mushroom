@@ -46,3 +46,8 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
+
+// Add GET handler to satisfy Flutterwave dashboard URL verification ping
+export async function GET() {
+  return NextResponse.json({ status: 'Webhook endpoint active' }, { status: 200 });
+}
