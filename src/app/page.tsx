@@ -64,21 +64,38 @@ export default function LandingPage() {
             style={{ fontSize: '4.5rem', lineHeight: 1.1, letterSpacing: '-0.02em', marginBottom: '1.5rem', textShadow: '0 4px 20px rgba(0,0,0,0.6)', color: '#FFD700' }}
           />
           <HeroSubtitleText />
-          <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
-            <Link href="#products" style={{
-              padding: '1.2rem 2.5rem',
-              backgroundColor: 'var(--color-forest-500)',
+          
+          {/* Custom style for the button's beautiful pulsing glow */}
+          <style>{`
+            @keyframes button-glow {
+              0% { box-shadow: 0 0 15px rgba(75, 127, 82, 0.4), 0 0 30px rgba(75, 127, 82, 0.2); transform: translateY(0); }
+              50% { box-shadow: 0 0 25px rgba(116, 198, 157, 0.8), 0 0 50px rgba(116, 198, 157, 0.4); transform: translateY(-3px); }
+              100% { box-shadow: 0 0 15px rgba(75, 127, 82, 0.4), 0 0 30px rgba(75, 127, 82, 0.2); transform: translateY(0); }
+            }
+            .hero-btn-animated {
+              animation: button-glow 3s infinite ease-in-out;
+              background: linear-gradient(135deg, var(--color-forest-500) 0%, var(--color-forest-700) 100%);
+              border: 1px solid rgba(255,255,255,0.2);
+            }
+            .hero-btn-animated:hover {
+              animation: none;
+              transform: scale(1.05) translateY(-3px) !important;
+              filter: brightness(1.15) saturate(1.2);
+              box-shadow: 0 10px 40px rgba(116, 198, 157, 0.8);
+            }
+          `}</style>
+
+          <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', marginTop: '-1.5rem', position: 'relative', zIndex: 10 }}>
+            <Link href="#products" className="hero-btn-animated" style={{
+              padding: '1.4rem 3.5rem',
               color: 'white',
-              borderRadius: '12px',
-              fontWeight: 700,
-              fontSize: '1.2rem',
+              borderRadius: '50px',
+              fontWeight: 800,
+              fontSize: '1.6rem',
+              letterSpacing: '0.02em',
               textDecoration: 'none',
-              boxShadow: '0 4px 14px rgba(45, 106, 79, 0.4)',
-              transition: 'transform 0.2s ease, filter 0.2s ease'
-            }}
-            onMouseOver={(e) => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.filter = 'brightness(1.1)'; }}
-            onMouseOut={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.filter = 'brightness(1)'; }}
-            >
+              transition: 'all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)'
+            }}>
               Explore Our Harvest
             </Link>
           </div>
