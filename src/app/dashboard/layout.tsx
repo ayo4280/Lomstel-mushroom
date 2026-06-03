@@ -138,10 +138,12 @@ export default function DashboardLayout({
               </>
             )}
 
-            <Link href="/dashboard/ai-agent" className={`nav-link ${pathname === '/dashboard/ai-agent' ? 'active' : ''}`}>
-              <Bot size={20} />
-              AI Agent
-            </Link>
+            {role === 'ADMIN' && (
+              <Link href="/dashboard/ai-agent" className={`nav-link ${pathname === '/dashboard/ai-agent' ? 'active' : ''}`}>
+                <Bot size={20} />
+                AI Agent
+              </Link>
+            )}
 
             <Link href="/dashboard/profile" className={`nav-link ${pathname === '/dashboard/profile' ? 'active' : ''}`}>
               <UserCircle size={20} />

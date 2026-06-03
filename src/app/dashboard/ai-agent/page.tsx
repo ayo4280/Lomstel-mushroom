@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Bot, Play, Building2, MapPin, Phone, ExternalLink, Activity, Clock, Zap, CheckCircle, Loader2, Globe, Flag, Edit, Send, X } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { supabase } from '@/utils/supabase/client';
 
 const NIGERIA_KEYWORDS = [
@@ -48,6 +49,7 @@ function getNextMonday(): string {
 }
 
 export default function AIAgentDashboard() {
+  const router = useRouter();
   const [leads, setLeads] = useState<Lead[]>([]);
   const [tasks, setTasks] = useState<AITask[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -66,7 +68,24 @@ export default function AIAgentDashboard() {
 
   useEffect(() => {
     setMounted(true);
-    fetchData();
+
+    const checkAccess = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        router.push('/login');
+        return;
+      }
+      
+      const { data: profile } = await supabase.from('profiles').select('role').eq('id', session.user.id).single();
+      if (profile?.role !== 'ADMIN') {
+        router.push('/dashboard');
+        return;
+      }
+      
+      fetchData();
+    };
+
+    checkAccess();
 
     const leadsSubscription = supabase
       .channel('leads_changes')
