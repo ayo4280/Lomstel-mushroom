@@ -77,6 +77,7 @@ export async function uploadCertificate(file: File, title: string, type: string,
       .getPublicUrl(filePath);
 
     // 3. Save metadata to DB
+    const { data: { user } } = await supabase.auth.getUser();
     const { error: dbError } = await supabase
       .from('certificates')
       .insert({
@@ -85,7 +86,8 @@ export async function uploadCertificate(file: File, title: string, type: string,
         issued: issued || null,
         expiry: expiry || null,
         result: result || null,
-        file_url: publicUrl
+        file_url: publicUrl,
+        uploaded_by: user?.id
       });
 
     if (dbError) throw dbError;
@@ -93,6 +95,36 @@ export async function uploadCertificate(file: File, title: string, type: string,
     return { success: true };
   } catch (error: any) {
     console.error('Error uploading certificate:', error);
+    return { success: false, error: error.message };
+  }
+}
+
+export async function deleteCertificate(id: string, fileUrl: string): Promise<{ success: boolean; error?: string }> {
+  try {
+    // Extract storage path from the public URL
+    // URL format: .../storage/v1/object/public/certificates/documents/filename.ext
+    const urlParts = fileUrl.split('/certificates/');
+    if (urlParts.length > 1) {
+      const filePath = urlParts[1];
+      const { error: storageError } = await supabase.storage
+        .from('certificates')
+        .remove([filePath]);
+      if (storageError) {
+        console.warn('Storage delete warning (continuing):', storageError.message);
+      }
+    }
+
+    // Delete the database record
+    const { error: dbError } = await supabase
+      .from('certificates')
+      .delete()
+      .eq('id', id);
+
+    if (dbError) throw dbError;
+
+    return { success: true };
+  } catch (error: any) {
+    console.error('Error deleting certificate:', error);
     return { success: false, error: error.message };
   }
 }

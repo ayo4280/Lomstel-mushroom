@@ -7,7 +7,7 @@ import * as path from 'path';
 dotenv.config({ path: path.resolve(process.cwd(), '.env.local') });
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 const apifyKey = process.env.APIFY_API_KEY!;
 
 if (!apifyKey) {
@@ -23,6 +23,23 @@ const LEADS_FILE = path.join(DATA_DIR, 'leads.json');
 
 async function runApifyScraper() {
   console.log('🤖 Starting AI Lead Generator via Apify...');
+  
+  // Create an initial task in the DB
+  let taskId: string | null = null;
+  console.log('📡 Logging task start to Supabase...');
+  const { data: taskData, error: taskError } = await supabase
+    .from('ai_tasks')
+    .insert({
+      task_name: 'Google Maps Bulk Buyer Scan',
+      status: 'Running',
+      logs: 'Initializing Apify scraper...'
+    })
+    .select('id')
+    .single();
+    
+  if (taskData) {
+    taskId = taskData.id;
+  }
 
   // 1. Start the Apify Google Maps Scraper actor
   console.log('🌐 Launching Apify Google Maps Scraper...');
@@ -32,8 +49,18 @@ async function runApifyScraper() {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        searchStringsArray: ['restaurants Lagos Nigeria', 'supermarkets Lagos Nigeria'],
-        maxCrawledPlacesPerSearch: 10,
+        searchStringsArray: [
+          'organic food distributors London UK', 
+          'mushroom importers New York USA', 
+          'health food supermarkets Berlin Germany',
+          'restaurants Lagos Nigeria', 
+          'supermarkets Lagos Nigeria',
+          'chinese supermarkets Lagos Nigeria',
+          'asian grocery stores Lagos Nigeria',
+          'chinese supermarkets London UK',
+          'asian grocery stores New York USA'
+        ],
+        maxCrawledPlacesPerSearch: 5,
         language: 'en',
         exportPlaceUrls: false,
         additionalInfo: false,
@@ -138,6 +165,19 @@ async function runApifyScraper() {
   console.log('\n🎉 AI Lead Generation Complete!');
   console.log(`   Total leads collected: ${leads.length}`);
   console.log('   View them in: /dashboard/ai-agent');
+
+  // 7. Complete the task in DB
+  if (taskId) {
+    await supabase
+      .from('ai_tasks')
+      .update({
+        status: 'Completed',
+        leads_found: leads.length,
+        logs: `Found ${leads.length} leads. Scraping finished successfully.`,
+        completed_at: new Date().toISOString()
+      })
+      .eq('id', taskId);
+  }
 }
 
 runApifyScraper();

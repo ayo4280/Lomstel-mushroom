@@ -98,5 +98,705 @@
     "status": "New",
     "id": "29276525-ce10-43fd-a330-27bab1546746",
     "created_at": "2026-05-21T21:08:38.284Z"
+  },
+  {
+    "business_name": "Nkoyo Restaurant",
+    "business_type": "Restaurant",
+    "contact_info": "+234 803 555 0101",
+    "location": "Victoria Island, Lagos",
+    "source_url": "https://maps.google.com",
+    "status": "New",
+    "id": "561db085-aa59-4fc5-9b1a-43c4a2d433b8",
+    "created_at": "2026-05-25T12:36:36.012Z"
+  },
+  {
+    "business_name": "Yellow Chilli",
+    "business_type": "Restaurant",
+    "contact_info": "+234 803 555 0102",
+    "location": "Lekki Phase 1, Lagos",
+    "source_url": "https://maps.google.com",
+    "status": "New",
+    "id": "1c412508-b59c-4f17-a2c1-297e7af0f865",
+    "created_at": "2026-05-25T12:36:36.014Z"
+  },
+  {
+    "business_name": "Food Concepts (Chicken Republic)",
+    "business_type": "Restaurant Chain",
+    "contact_info": "+234 803 555 0103",
+    "location": "Ikeja, Lagos",
+    "source_url": "https://maps.google.com",
+    "status": "New",
+    "id": "2246a6ed-db4b-4d81-a66f-be6af681f859",
+    "created_at": "2026-05-25T12:36:36.014Z"
+  },
+  {
+    "business_name": "Shoprite Nigeria",
+    "business_type": "Supermarket",
+    "contact_info": "+234 803 555 0104",
+    "location": "Surulere, Lagos",
+    "source_url": "https://maps.google.com",
+    "status": "New",
+    "id": "090e3be6-42af-45ae-8f8d-5f4ab013a412",
+    "created_at": "2026-05-25T12:36:36.014Z"
+  },
+  {
+    "business_name": "Spar Nigeria",
+    "business_type": "Supermarket",
+    "contact_info": "+234 803 555 0105",
+    "location": "Ikoyi, Lagos",
+    "source_url": "https://maps.google.com",
+    "status": "New",
+    "id": "fa3c074b-9b8e-4f51-87c5-d3996d165cd5",
+    "created_at": "2026-05-25T12:36:36.014Z"
+  },
+  {
+    "business_name": "The Place Restaurant",
+    "business_type": "Restaurant",
+    "contact_info": "+234 803 555 0106",
+    "location": "Ajah, Lagos",
+    "source_url": "https://maps.google.com",
+    "status": "New",
+    "id": "50fbc5f8-cd7c-4fc3-b347-84ba06ad539c",
+    "created_at": "2026-05-25T12:36:36.014Z"
+  },
+  {
+    "business_name": "Coldstone Creamery",
+    "business_type": "Cafe",
+    "contact_info": "+234 803 555 0107",
+    "location": "Gbagada, Lagos",
+    "source_url": "https://maps.google.com",
+    "status": "New",
+    "id": "87bee85c-3c29-4fc3-9095-dd53f20a8eac",
+    "created_at": "2026-05-25T12:36:36.014Z"
+  },
+  {
+    "business_name": "Kilimanjaro Restaurant",
+    "business_type": "Restaurant",
+    "contact_info": "+234 803 555 0108",
+    "location": "Yaba, Lagos",
+    "source_url": "https://maps.google.com",
+    "status": "New",
+    "id": "990906ca-001a-4e74-83a2-fb829199b7cf",
+    "created_at": "2026-05-25T12:36:36.014Z"
+  },
+  {
+    "business_name": "Bukka Hut",
+    "business_type": "Restaurant",
+    "contact_info": "+234 803 555 0109",
+    "location": "Magodo, Lagos",
+    "source_url": "https://maps.google.com",
+    "status": "New",
+    "id": "667bd368-59ae-45bb-aaa1-17c2f143f761",
+    "created_at": "2026-05-25T12:36:36.014Z"
+  },
+  {
+    "business_name": "Ebeano Supermarket",
+    "business_type": "Supermarket",
+    "contact_info": "+234 803 555 0110",
+    "location": "Lekki, Lagos",
+    "source_url": "https://maps.google.com",
+    "status": "New",
+    "id": "7fc9f155-a233-4ed1-bcae-253fb2fc570d",
+    "created_at": "2026-05-25T12:36:36.014Z"
+  },
+  {
+    "business_name": "Delis Delicatessen",
+    "business_type": "Grocery store",
+    "contact_info": "+234 816 213 5438",
+    "location": "1291 Akin Adesola St, Victoria Island, Lagos 106104, Lagos, Nigeria",
+    "source_url": "https://www.google.com/maps/search/?api=1&query=Delis%20Delicatessen&query_place_id=ChIJN0zf2i31OxARgiI0u5oNBeM",
+    "status": "New",
+    "id": "2dbb4657-2bf8-498f-8859-b895361335a4",
+    "created_at": "2026-05-25T12:38:33.121Z"
+  },
+  {
+    "business_name": "PRINCE EBEANO SUPERMARKET IKEJA",
+    "business_type": "Supermarket",
+    "contact_info": "+234 802 665 1017",
+    "location": "14 Isaac John St, Ikeja GRA, Ikeja 100271, Lagos, Nigeria",
+    "source_url": "https://www.google.com/maps/search/?api=1&query=PRINCE%20EBEANO%20SUPERMARKET%20IKEJA&query_place_id=ChIJidjYyICTOxARlR1OrXNtRrk",
+    "status": "New",
+    "id": "4a2e0158-1eee-4cbe-b0c6-fdf2dfb098e0",
+    "created_at": "2026-05-25T12:38:33.124Z"
+  },
+  {
+    "business_name": "SPAR Market Ikoyi",
+    "business_type": "Supermarket",
+    "contact_info": "+234 706 646 6873",
+    "location": "77 Awolowo Rd, next to Mobil Filling Station, Ikoyi, Lagos 100212, Lagos, Nigeria",
+    "source_url": "https://www.google.com/maps/search/?api=1&query=SPAR%20Market%20Ikoyi&query_place_id=ChIJTVxyU9H0OxARTCqzbTOG6eY",
+    "status": "New",
+    "id": "b583b448-8b03-4150-a906-3ce9b27a61eb",
+    "created_at": "2026-05-25T12:38:33.124Z"
+  },
+  {
+    "business_name": "Edichart Shopping Mall",
+    "business_type": "Supermarket",
+    "contact_info": "+234 12914235",
+    "location": "54 Olorunlogbon St, Anthony, Lagos 105102, Lagos, Nigeria",
+    "source_url": "https://www.google.com/maps/search/?api=1&query=Edichart%20Shopping%20Mall&query_place_id=ChIJqfecOYaNOxAR9C8ZQ2BT4rs",
+    "status": "New",
+    "id": "6b89c889-2945-4453-8a56-3ecf7c8e7748",
+    "created_at": "2026-05-25T12:38:33.124Z"
+  },
+  {
+    "business_name": "Supermart.ng",
+    "business_type": "Grocery delivery service",
+    "contact_info": "+234 806 178 7063",
+    "location": "No address",
+    "source_url": "https://www.google.com/maps/search/?api=1&query=Supermart.ng&query_place_id=ChIJT5bHHi71OxARPtAYzgEzT8Q",
+    "status": "New",
+    "id": "69ee3a40-2983-4661-acc7-d1c437cb72a1",
+    "created_at": "2026-05-25T12:38:33.124Z"
+  },
+  {
+    "business_name": "The Arena Market Processed Foods",
+    "business_type": "Grocery store",
+    "contact_info": "+234 813 545 7665",
+    "location": "The Facility Management Complex Nigeria Army Shopping Complex, Lagos, Nigeria",
+    "source_url": "https://www.google.com/maps/search/?api=1&query=The%20Arena%20Market%20Processed%20Foods&query_place_id=ChIJrY0dEveNOxARB2juGKJsB1U",
+    "status": "New",
+    "id": "a5d4647f-7693-44ef-881a-2b2fa4e8b38a",
+    "created_at": "2026-05-25T12:38:33.124Z"
+  },
+  {
+    "business_name": "BG Mart Superstore",
+    "business_type": "Supermarket",
+    "contact_info": "No phone",
+    "location": "21 Mobolaji Bank Anthony Way, Ikeja GRA, Lagos 101233, Lagos, Nigeria",
+    "source_url": "https://www.google.com/maps/search/?api=1&query=BG%20Mart%20Superstore&query_place_id=ChIJzaIxpHOSOxARTJyyRSOgywA",
+    "status": "New",
+    "id": "dbdcda93-643d-49f2-9b43-c1de7fb18bd4",
+    "created_at": "2026-05-25T12:38:33.124Z"
+  },
+  {
+    "business_name": "Grand Square Supermarket and Stores",
+    "business_type": "Supermarket",
+    "contact_info": "No phone",
+    "location": "Plot Y, Mobolaji Johnson Ave, Alausa, Lagos, Nigeria",
+    "source_url": "https://www.google.com/maps/search/?api=1&query=Grand%20Square%20Supermarket%20and%20Stores&query_place_id=ChIJSw3-UE2SOxARx6YnKRh4_Lc",
+    "status": "New",
+    "id": "43bab6fa-d183-4474-8fa1-189ff6c05e5b",
+    "created_at": "2026-05-25T12:38:33.124Z"
+  },
+  {
+    "business_name": "Prince Ebeano Supermarket Lekki Lagos",
+    "business_type": "Supermarket",
+    "contact_info": "+234 705 109 2255",
+    "location": "Plot 9 Northern Buisness district along, Admiralty Wy, Lekki Phase 1, Lagos, Nigeria",
+    "source_url": "https://www.google.com/maps/search/?api=1&query=Prince%20Ebeano%20Supermarket%20Lekki%20Lagos&query_place_id=ChIJuRMmx0_0OxARC4fY_11lwgk",
+    "status": "New",
+    "id": "de411f02-d71c-4853-98af-7d3fb40d256d",
+    "created_at": "2026-05-25T12:38:33.125Z"
+  },
+  {
+    "business_name": "De Bull Restaurant & Bar",
+    "business_type": "Steak house",
+    "contact_info": "+234 201 460 8200",
+    "location": "Quits Aviation Free Trade Zone Murtala Muhammed International Airport, Lagos, Nigeria",
+    "source_url": "https://www.google.com/maps/search/?api=1&query=De%20Bull%20Restaurant%20%26%20Bar&query_place_id=ChIJnY28pCmROxARMG2Pudo9nfU",
+    "status": "New",
+    "id": "0c14c855-dc7c-415d-8d79-616daad8ca7c",
+    "created_at": "2026-05-25T12:38:33.125Z"
+  },
+  {
+    "business_name": "The Bazaar Supermarket- Ilupeju",
+    "business_type": "Grocery store",
+    "contact_info": "+234 904 430 2000",
+    "location": "Odi-Olowo Ojuwoye LCDA, 14, Ade Akinsanya Street, off Town Planning St, Ilupeju, Lagos, Nigeria",
+    "source_url": "https://www.google.com/maps/search/?api=1&query=The%20Bazaar%20Supermarket-%20Ilupeju&query_place_id=ChIJwZhIfu2NOxARkaTOnbwW59c",
+    "status": "New",
+    "id": "aeb8ac3c-d1eb-4dbf-8a9d-eb1db0d26c11",
+    "created_at": "2026-05-25T12:38:33.125Z"
+  },
+  {
+    "business_name": "Yellow Chilli Restaurant & Bar",
+    "business_type": "African restaurant",
+    "contact_info": "+234 808 994 8999",
+    "location": "35 Joel Ogunnaike St, Ikeja GRA, Ikeja 101233, Lagos, Nigeria",
+    "source_url": "https://www.google.com/maps/search/?api=1&query=Yellow%20Chilli%20Restaurant%20%26%20Bar&query_place_id=ChIJgcDq9BaSOxARngusDYnA-Ks",
+    "status": "New",
+    "id": "6046da3c-6725-41d8-9200-71d4e18e0f0b",
+    "created_at": "2026-05-25T12:38:33.125Z"
+  },
+  {
+    "business_name": "SLoW",
+    "business_type": "Restaurant",
+    "contact_info": "+234 901 666 6660",
+    "location": "2 Musa Yar' Adua St, Victoria Island, Lagos 106104, Lagos, Nigeria",
+    "source_url": "https://www.google.com/maps/search/?api=1&query=SLoW&query_place_id=ChIJZ3qIQs-LOxARZM3CF_BLJfU",
+    "status": "New",
+    "id": "c5d34dc7-d8d3-4aba-99d0-da458c0fd5e4",
+    "created_at": "2026-05-25T12:38:33.125Z"
+  },
+  {
+    "business_name": "THE LAGOON",
+    "business_type": "Restaurant",
+    "contact_info": "+234 803 080 6363",
+    "location": "1c Ozumba Mbadiwe Ave, Victoria Island, Lagos 106104, Lagos, Nigeria",
+    "source_url": "https://www.google.com/maps/search/?api=1&query=THE%20LAGOON&query_place_id=ChIJ6dHQ1tWKOxARCrHT1udlppk",
+    "status": "New",
+    "id": "e26ba915-e3d1-483b-a265-cc1cdf89b583",
+    "created_at": "2026-05-25T12:38:33.125Z"
+  },
+  {
+    "business_name": "RSVP restaurant",
+    "business_type": "New American restaurant",
+    "contact_info": "+234 818 616 6666",
+    "location": "9 Eletu Ogabi St, Victoria Island, Lagos 101001, Lagos, Nigeria",
+    "source_url": "https://www.google.com/maps/search/?api=1&query=RSVP%20restaurant&query_place_id=ChIJG072Yi31OxARgmoBpC6gNCA",
+    "status": "New",
+    "id": "80fe7946-a367-4b74-9dc8-08a8eb01be18",
+    "created_at": "2026-05-25T12:38:33.125Z"
+  },
+  {
+    "business_name": "Noir Lagos",
+    "business_type": "Modern French restaurant",
+    "contact_info": "+234 908 066 6687",
+    "location": "Noir Lagos, 4A Akin Olugbade St, Victoria Island, Lagos 101241, Lagos, Nigeria",
+    "source_url": "https://www.google.com/maps/search/?api=1&query=Noir%20Lagos&query_place_id=ChIJf37Oqy31OxAR9MFFkjaEvCE",
+    "status": "New",
+    "id": "674000e5-8a72-4e74-9215-d82a769c142b",
+    "created_at": "2026-05-25T12:38:33.125Z"
+  },
+  {
+    "business_name": "Shiro Lagos",
+    "business_type": "Restaurant",
+    "contact_info": "No phone",
+    "location": "Block XVI 3 & 4, Oniru Estate, Victoria Island, Lagos 101241, Lagos, Nigeria",
+    "source_url": "https://www.google.com/maps/search/?api=1&query=Shiro%20Lagos&query_place_id=ChIJ8zWFqBb1OxARbb9xPZcXj2E",
+    "status": "New",
+    "id": "2fa4e85d-38b0-4e60-91f1-cf5fa5bcd3b7",
+    "created_at": "2026-05-25T12:38:33.125Z"
+  },
+  {
+    "business_name": "Eric Kayser - Victoria Island",
+    "business_type": "Restaurant",
+    "contact_info": "+234 906 000 7275",
+    "location": "864a Bishop Aboyade Cole St, Victoria Island, Lagos 106104, Lagos, Nigeria",
+    "source_url": "https://www.google.com/maps/search/?api=1&query=Eric%20Kayser%20-%20Victoria%20Island&query_place_id=ChIJVUftO7r1OxARUCfrp6T_0jc",
+    "status": "New",
+    "id": "c9d0c672-d6f3-4f6c-947d-0d2171e23dff",
+    "created_at": "2026-05-25T12:38:33.125Z"
+  },
+  {
+    "business_name": "The Spice Route",
+    "business_type": "Indian restaurant",
+    "contact_info": "+234 808 020 8080",
+    "location": "36 Adeola Odeku St, Victoria Island, Lagos 100246, Lagos, Nigeria",
+    "source_url": "https://www.google.com/maps/search/?api=1&query=The%20Spice%20Route&query_place_id=ChIJrW4FvYSLOxARDV3q0-zvFy0",
+    "status": "New",
+    "id": "86009020-e47d-4cd1-ae5d-96b29d76ca8b",
+    "created_at": "2026-05-25T12:38:33.125Z"
+  },
+  {
+    "business_name": "Cactus Restaurant",
+    "business_type": "Restaurant",
+    "contact_info": "+234 802 777 7666",
+    "location": "20/24 Ozumba Mbadiwe Ave, Victoria Island, Lagos 106104, Lagos, Nigeria",
+    "source_url": "https://www.google.com/maps/search/?api=1&query=Cactus%20Restaurant&query_place_id=ChIJfyR3h9_0OxARNedg3NyriY0",
+    "status": "New",
+    "id": "c4634d5d-314a-4d0c-9e3d-1b96fad9d2ae",
+    "created_at": "2026-05-25T12:38:33.125Z"
+  },
+  {
+    "business_name": "World Organic & Whole Foods",
+    "business_type": "Grocery store",
+    "contact_info": "+44 20 7916 8366",
+    "location": "495-497 Hornsey Rd, London N19 3QL, United Kingdom",
+    "source_url": "https://www.google.com/maps/search/?api=1&query=World%20Organic%20%26%20Whole%20Foods&query_place_id=ChIJ1_SpZrsbdkgRCA03C1WW0dM",
+    "status": "New",
+    "id": "311e6707-ec7c-4590-8a1c-a5d01a3480a8",
+    "created_at": "2026-05-25T12:50:27.111Z"
+  },
+  {
+    "business_name": "Earth Organic",
+    "business_type": "Organic food store",
+    "contact_info": "No phone",
+    "location": "241 Bethnal Grn Rd, London E2 6AB, United Kingdom",
+    "source_url": "https://www.google.com/maps/search/?api=1&query=Earth%20Organic&query_place_id=ChIJlV2eXIoddkgRTgh0sRkHcMc",
+    "status": "New",
+    "id": "f3039e4e-1f83-4ce3-9209-7e746b8b5054",
+    "created_at": "2026-05-25T12:50:27.112Z"
+  },
+  {
+    "business_name": "Zest Organic Food",
+    "business_type": "Organic food store",
+    "contact_info": "+44 20 3305 8763",
+    "location": "33 Dockhead, London SE1 2BS, United Kingdom",
+    "source_url": "https://www.google.com/maps/search/?api=1&query=Zest%20Organic%20Food&query_place_id=ChIJE7q4PkcDdkgRPylD4mzcE80",
+    "status": "New",
+    "id": "e03bf56f-69c4-4a67-beeb-1dffc759a887",
+    "created_at": "2026-05-25T12:50:27.112Z"
+  },
+  {
+    "business_name": "Kirsch Mushroom Company Inc",
+    "business_type": "Food products supplier",
+    "contact_info": "(718) 991-4977",
+    "location": "751 Drake St, Bronx, NY 10474",
+    "source_url": "https://www.google.com/maps/search/?api=1&query=Kirsch%20Mushroom%20Company%20Inc&query_place_id=ChIJh51jZAH1wokRfo-jlfv5sBw",
+    "status": "New",
+    "id": "7d764e80-0f87-41f0-a796-69802a069d3f",
+    "created_at": "2026-05-25T12:50:27.112Z"
+  },
+  {
+    "business_name": "Mr. Mushroom of NY, Inc.",
+    "business_type": "Produce wholesaler",
+    "contact_info": "(718) 821-9895",
+    "location": "19-48 Troutman St, Ridgewood, NY 11385",
+    "source_url": "https://www.google.com/maps/search/?api=1&query=Mr.%20Mushroom%20of%20NY%2C%20Inc.&query_place_id=ChIJ06Y34f9bwokRWM4RdbZqcAk",
+    "status": "New",
+    "id": "695ff163-d467-459c-a582-fa9c7f0d50aa",
+    "created_at": "2026-05-25T12:50:27.112Z"
+  },
+  {
+    "business_name": "Superfoods Wholesale",
+    "business_type": "Health food store",
+    "contact_info": "+44 20 7255 9721",
+    "location": "110-112 Camley St, London N1C 4PF, United Kingdom",
+    "source_url": "https://www.google.com/maps/search/?api=1&query=Superfoods%20Wholesale&query_place_id=ChIJr1dDBhgbdkgR0CsCQ-LIcwU",
+    "status": "New",
+    "id": "8b3a07a8-58b7-463f-a0ba-db3cae0c3122",
+    "created_at": "2026-05-25T12:50:27.112Z"
+  },
+  {
+    "business_name": "Earth Natural Foods",
+    "business_type": "Health food store",
+    "contact_info": "+44 20 7482 2211",
+    "location": "200-202 Kentish Town Rd, London NW5 2AE, United Kingdom",
+    "source_url": "https://www.google.com/maps/search/?api=1&query=Earth%20Natural%20Foods&query_place_id=ChIJ6Y0ongIbdkgRgCME7xfFhRg",
+    "status": "New",
+    "id": "10595b48-7228-45fd-9c34-0414318d9b59",
+    "created_at": "2026-05-25T12:50:27.112Z"
+  },
+  {
+    "business_name": "Mushroom Direct",
+    "business_type": "Farm",
+    "contact_info": "(877) 692-8835",
+    "location": "91-36 182nd Pl, Jamaica, NY 11423",
+    "source_url": "https://www.google.com/maps/search/?api=1&query=Mushroom%20Direct&query_place_id=ChIJSTPbLIxhwokRsyTHDYrNywk",
+    "status": "New",
+    "id": "5a6e258b-f2f8-447f-bf63-c59862702487",
+    "created_at": "2026-05-25T12:50:27.112Z"
+  },
+  {
+    "business_name": "K-Market Ukko-Pekka",
+    "business_type": "Grocery store",
+    "contact_info": "+358 10 2310280",
+    "location": "Hyvinkäänkatu 15, 05800 Hyvinkää, Finland",
+    "source_url": "https://www.google.com/maps/search/?api=1&query=K-Market%20Ukko-Pekka&query_place_id=ChIJaxFvW94OjkYRZB_xtYDpvQg",
+    "status": "New",
+    "id": "ecf1f31d-920e-4efb-9038-58541cc33471",
+    "created_at": "2026-05-25T12:50:27.112Z"
+  },
+  {
+    "business_name": "Hötorgshallen",
+    "business_type": "Market",
+    "contact_info": "No phone",
+    "location": "Sergels Torg 29, 111 57 Stockholm, Sweden",
+    "source_url": "https://www.google.com/maps/search/?api=1&query=H%C3%B6torgshallen&query_place_id=ChIJt-rFEV-dX0YR8pASKtKXAgg",
+    "status": "New",
+    "id": "d68c8a48-1494-4452-9f3e-9e680ad55b53",
+    "created_at": "2026-05-25T12:50:27.112Z"
+  },
+  {
+    "business_name": "Adisgladis",
+    "business_type": "Clothing store",
+    "contact_info": "+46 70 968 93 62",
+    "location": "Wollmar Yxkullsgatan 8, 118 50 Stockholm, Sweden",
+    "source_url": "https://www.google.com/maps/search/?api=1&query=Adisgladis&query_place_id=ChIJNczOveV3X0YRuGeF6FIeZO0",
+    "status": "New",
+    "id": "c722647b-565d-47a0-b0a8-b89b9897695a",
+    "created_at": "2026-05-25T12:50:27.112Z"
+  },
+  {
+    "business_name": "VITALIA Reformhaus",
+    "business_type": "Health food store",
+    "contact_info": "+49 30 20619964",
+    "location": "Friedrichstraße 141, 10117 Berlin, Germany",
+    "source_url": "https://www.google.com/maps/search/?api=1&query=VITALIA%20Reformhaus&query_place_id=ChIJcy1JA8NRqEcRxBDpysU39mg",
+    "status": "New",
+    "id": "adf934f0-0069-478c-968c-2a63e106b021",
+    "created_at": "2026-05-25T12:50:27.112Z"
+  },
+  {
+    "business_name": "K-Market Kilo",
+    "business_type": "Grocery store",
+    "contact_info": "+358 20 7705140",
+    "location": "Kilonpuistonkatu 14, 02610 Espoo, Finland",
+    "source_url": "https://www.google.com/maps/search/?api=1&query=K-Market%20Kilo&query_place_id=ChIJBXaqxyn0jUYRQGn2ZOagqZE",
+    "status": "New",
+    "id": "312a6d66-ef9c-481c-bda7-f9026b38c6c8",
+    "created_at": "2026-05-25T12:50:27.112Z"
+  },
+  {
+    "business_name": "RSVP restaurant",
+    "business_type": "New American restaurant",
+    "contact_info": "+234 818 616 6666",
+    "location": "9 Eletu Ogabi St, Victoria Island, Lagos 101001, Lagos, Nigeria",
+    "source_url": "https://www.google.com/maps/search/?api=1&query=RSVP%20restaurant&query_place_id=ChIJG072Yi31OxARgmoBpC6gNCA",
+    "status": "New",
+    "id": "e2a4cda1-c52f-4c0a-90ab-d9a338960a4e",
+    "created_at": "2026-05-25T12:50:27.112Z"
+  },
+  {
+    "business_name": "THE LAGOON",
+    "business_type": "Restaurant",
+    "contact_info": "+234 803 080 6363",
+    "location": "1c Ozumba Mbadiwe Ave, Victoria Island, Lagos 106104, Lagos, Nigeria",
+    "source_url": "https://www.google.com/maps/search/?api=1&query=THE%20LAGOON&query_place_id=ChIJ6dHQ1tWKOxARCrHT1udlppk",
+    "status": "New",
+    "id": "a5abbd3e-d5ae-4c05-942f-498e5cbee5a5",
+    "created_at": "2026-05-25T12:50:27.112Z"
+  },
+  {
+    "business_name": "The Spice Route",
+    "business_type": "Indian restaurant",
+    "contact_info": "+234 808 020 8080",
+    "location": "36 Adeola Odeku St, Victoria Island, Lagos 100246, Lagos, Nigeria",
+    "source_url": "https://www.google.com/maps/search/?api=1&query=The%20Spice%20Route&query_place_id=ChIJrW4FvYSLOxARDV3q0-zvFy0",
+    "status": "New",
+    "id": "7ff2ffa3-8e54-4938-9860-f8a4ac7b545d",
+    "created_at": "2026-05-25T12:50:27.112Z"
+  },
+  {
+    "business_name": "Supermart.ng",
+    "business_type": "Grocery delivery service",
+    "contact_info": "+234 806 178 7063",
+    "location": "No address",
+    "source_url": "https://www.google.com/maps/search/?api=1&query=Supermart.ng&query_place_id=ChIJT5bHHi71OxARPtAYzgEzT8Q",
+    "status": "New",
+    "id": "aa39ab4c-fb60-409c-b965-b1a47e406edd",
+    "created_at": "2026-05-25T12:50:27.112Z"
+  },
+  {
+    "business_name": "Prince Ebeano Supermarket Lekki Lagos",
+    "business_type": "Supermarket",
+    "contact_info": "+234 705 109 2255",
+    "location": "Plot 9 Northern Buisness district along, Admiralty Wy, Lekki Phase 1, Lagos, Nigeria",
+    "source_url": "https://www.google.com/maps/search/?api=1&query=Prince%20Ebeano%20Supermarket%20Lekki%20Lagos&query_place_id=ChIJuRMmx0_0OxARC4fY_11lwgk",
+    "status": "New",
+    "id": "66e4980e-0565-4c5f-a86f-824c47d63f73",
+    "created_at": "2026-05-25T12:50:27.112Z"
+  },
+  {
+    "business_name": "Grand Square Supermarket and Stores",
+    "business_type": "Supermarket",
+    "contact_info": "No phone",
+    "location": "Plot Y, Mobolaji Johnson Ave, Alausa, Lagos, Nigeria",
+    "source_url": "https://www.google.com/maps/search/?api=1&query=Grand%20Square%20Supermarket%20and%20Stores&query_place_id=ChIJSw3-UE2SOxARx6YnKRh4_Lc",
+    "status": "New",
+    "id": "3f7e5d85-1904-42e4-ad12-fe1d292bd75b",
+    "created_at": "2026-05-25T12:50:27.112Z"
+  },
+  {
+    "business_name": "Cactus Restaurant",
+    "business_type": "Restaurant",
+    "contact_info": "+234 802 777 7666",
+    "location": "20/24 Ozumba Mbadiwe Ave, Victoria Island, Lagos 106104, Lagos, Nigeria",
+    "source_url": "https://www.google.com/maps/search/?api=1&query=Cactus%20Restaurant&query_place_id=ChIJfyR3h9_0OxARNedg3NyriY0",
+    "status": "New",
+    "id": "fa529b5d-8f9b-43e2-968a-666599bd2608",
+    "created_at": "2026-05-25T12:50:27.112Z"
+  },
+  {
+    "business_name": "Earth Organic",
+    "business_type": "Organic food store",
+    "contact_info": "No phone",
+    "location": "241 Bethnal Grn Rd, London E2 6AB, United Kingdom",
+    "source_url": "https://www.google.com/maps/search/?api=1&query=Earth%20Organic&query_place_id=ChIJlV2eXIoddkgRTgh0sRkHcMc",
+    "status": "New",
+    "id": "dbf7cefa-9b8d-44b4-bf89-015905e3591e",
+    "created_at": "2026-05-25T13:39:45.888Z"
+  },
+  {
+    "business_name": "World Organic & Whole Foods",
+    "business_type": "Grocery store",
+    "contact_info": "+44 20 7916 8366",
+    "location": "495-497 Hornsey Rd, London N19 3QL, United Kingdom",
+    "source_url": "https://www.google.com/maps/search/?api=1&query=World%20Organic%20%26%20Whole%20Foods&query_place_id=ChIJ1_SpZrsbdkgRCA03C1WW0dM",
+    "status": "New",
+    "id": "a7e8c035-7617-4b07-afe2-80cec832e120",
+    "created_at": "2026-05-25T13:39:45.889Z"
+  },
+  {
+    "business_name": "Zest Organic Food",
+    "business_type": "Organic food store",
+    "contact_info": "+44 20 3305 8763",
+    "location": "33 Dockhead, London SE1 2BS, United Kingdom",
+    "source_url": "https://www.google.com/maps/search/?api=1&query=Zest%20Organic%20Food&query_place_id=ChIJE7q4PkcDdkgRPylD4mzcE80",
+    "status": "New",
+    "id": "e0ac4a85-85db-46e5-aa28-8b139a27e3f3",
+    "created_at": "2026-05-25T13:39:45.889Z"
+  },
+  {
+    "business_name": "Superfoods Wholesale",
+    "business_type": "Health food store",
+    "contact_info": "+44 20 7255 9721",
+    "location": "110-112 Camley St, London N1C 4PF, United Kingdom",
+    "source_url": "https://www.google.com/maps/search/?api=1&query=Superfoods%20Wholesale&query_place_id=ChIJr1dDBhgbdkgR0CsCQ-LIcwU",
+    "status": "New",
+    "id": "4b9b62ae-c2fe-4a5d-a9b1-59e0e3bd9040",
+    "created_at": "2026-05-25T13:39:45.889Z"
+  },
+  {
+    "business_name": "Kirsch Mushroom Company Inc",
+    "business_type": "Food products supplier",
+    "contact_info": "(718) 991-4977",
+    "location": "751 Drake St, Bronx, NY 10474",
+    "source_url": "https://www.google.com/maps/search/?api=1&query=Kirsch%20Mushroom%20Company%20Inc&query_place_id=ChIJh51jZAH1wokRfo-jlfv5sBw",
+    "status": "New",
+    "id": "79c68d3a-acd0-45bb-9fd9-6e1db3d388b5",
+    "created_at": "2026-05-25T13:39:45.889Z"
+  },
+  {
+    "business_name": "Mushroom Direct",
+    "business_type": "Farm",
+    "contact_info": "(877) 692-8835",
+    "location": "91-36 182nd Pl, Jamaica, NY 11423",
+    "source_url": "https://www.google.com/maps/search/?api=1&query=Mushroom%20Direct&query_place_id=ChIJSTPbLIxhwokRsyTHDYrNywk",
+    "status": "New",
+    "id": "8a4a01f2-8285-4e85-9791-ddfa40af6bdf",
+    "created_at": "2026-05-25T13:39:45.889Z"
+  },
+  {
+    "business_name": "Earth Natural Foods",
+    "business_type": "Health food store",
+    "contact_info": "+44 20 7482 2211",
+    "location": "200-202 Kentish Town Rd, London NW5 2AE, United Kingdom",
+    "source_url": "https://www.google.com/maps/search/?api=1&query=Earth%20Natural%20Foods&query_place_id=ChIJ6Y0ongIbdkgRgCME7xfFhRg",
+    "status": "New",
+    "id": "4457f814-9340-457d-9b85-d601cbfe4b24",
+    "created_at": "2026-05-25T13:39:45.889Z"
+  },
+  {
+    "business_name": "Mr. Mushroom of NY, Inc.",
+    "business_type": "Produce wholesaler",
+    "contact_info": "(718) 821-9895",
+    "location": "19-48 Troutman St, Ridgewood, NY 11385",
+    "source_url": "https://www.google.com/maps/search/?api=1&query=Mr.%20Mushroom%20of%20NY%2C%20Inc.&query_place_id=ChIJ06Y34f9bwokRWM4RdbZqcAk",
+    "status": "New",
+    "id": "6201d4c8-225d-41ae-9dcc-e8787fc150d9",
+    "created_at": "2026-05-25T13:39:45.889Z"
+  },
+  {
+    "business_name": "nkiru supermarket",
+    "business_type": "Asian grocery store",
+    "contact_info": "+234 705 243 8825",
+    "location": "isolo road Kekki, Kosofe, Lagos, Nigeria",
+    "source_url": "https://www.google.com/maps/search/?api=1&query=nkiru%20supermarket&query_place_id=ChIJBTQ7EOyNOxARinlVSsxHWV4",
+    "status": "New",
+    "id": "80624530-dfd6-4627-b4bf-92f5f449e881",
+    "created_at": "2026-05-25T13:39:45.889Z"
+  },
+  {
+    "business_name": "Olive Supermarket",
+    "business_type": "Supermarket",
+    "contact_info": "(314) 997-5168",
+    "location": "8041 Olive Blvd, St. Louis, MO 63130",
+    "source_url": "https://www.google.com/maps/search/?api=1&query=Olive%20Supermarket&query_place_id=ChIJN6gVgec034cRCJd7f_H0_qE",
+    "status": "New",
+    "id": "2aad7791-1bb4-4aaf-87f2-32505f74e1a5",
+    "created_at": "2026-05-25T13:39:45.890Z"
+  },
+  {
+    "business_name": "Hua Fei Chinese Products Supermarket",
+    "business_type": "Grocery store",
+    "contact_info": "No phone",
+    "location": "CCMP+Q3F, Bishop Aboyade Cole St, Victoria Island, Lagos 106104, Lagos, Nigeria",
+    "source_url": "https://www.google.com/maps/search/?api=1&query=Hua%20Fei%20Chinese%20Products%20Supermarket&query_place_id=ChIJ-2DcJFX1OxARhwTF4MLDTCU",
+    "status": "New",
+    "id": "e2b7564e-6f10-4eac-bbbe-664ad61cdba7",
+    "created_at": "2026-05-25T13:39:45.890Z"
+  },
+  {
+    "business_name": "VITALIA Reformhaus",
+    "business_type": "Health food store",
+    "contact_info": "+49 30 20619964",
+    "location": "Friedrichstraße 141, 10117 Berlin, Germany",
+    "source_url": "https://www.google.com/maps/search/?api=1&query=VITALIA%20Reformhaus&query_place_id=ChIJcy1JA8NRqEcRxBDpysU39mg",
+    "status": "New",
+    "id": "a6202008-7af0-41da-813f-4435c6732d5d",
+    "created_at": "2026-05-25T13:39:45.890Z"
+  },
+  {
+    "business_name": "华阳超市",
+    "business_type": "Chinese supermarket",
+    "contact_info": "+234 808 784 4955",
+    "location": "20 Emina Cres, Toyin St, Allen, Ikeja 101233, Lagos, Nigeria",
+    "source_url": "https://www.google.com/maps/search/?api=1&query=%E5%8D%8E%E9%98%B3%E8%B6%85%E5%B8%82&query_place_id=ChIJxULbJ1STOxARJ0U7f7Zh3XQ",
+    "status": "New",
+    "id": "70ff7352-115d-4fa5-827b-fe65fe0123f7",
+    "created_at": "2026-05-25T13:39:45.890Z"
+  },
+  {
+    "business_name": "K-Market Ukko-Pekka",
+    "business_type": "Grocery store",
+    "contact_info": "+358 10 2310280",
+    "location": "Hyvinkäänkatu 15, 05800 Hyvinkää, Finland",
+    "source_url": "https://www.google.com/maps/search/?api=1&query=K-Market%20Ukko-Pekka&query_place_id=ChIJaxFvW94OjkYRZB_xtYDpvQg",
+    "status": "New",
+    "id": "f5d8604d-9e77-4046-8227-ea168f31ac59",
+    "created_at": "2026-05-25T13:39:45.890Z"
+  },
+  {
+    "business_name": "Osata Supermarket",
+    "business_type": "Supermarket",
+    "contact_info": "+234 704 111 6683",
+    "location": "7 Opebi Rd, Allen, Lagos 101233, Lagos, Nigeria",
+    "source_url": "https://www.google.com/maps/search/?api=1&query=Osata%20Supermarket&query_place_id=ChIJtbzJITmSOxARlT--S3TC5cE",
+    "status": "New",
+    "id": "ea45b5b6-25b7-41a3-9f44-3d9da180b24c",
+    "created_at": "2026-05-25T13:39:45.890Z"
+  },
+  {
+    "business_name": "Hötorgshallen",
+    "business_type": "Market",
+    "contact_info": "No phone",
+    "location": "Sergels Torg 29, 111 57 Stockholm, Sweden",
+    "source_url": "https://www.google.com/maps/search/?api=1&query=H%C3%B6torgshallen&query_place_id=ChIJt-rFEV-dX0YR8pASKtKXAgg",
+    "status": "New",
+    "id": "8b44947b-c74c-4958-bfa3-d6f56fbdbf83",
+    "created_at": "2026-05-25T13:39:45.890Z"
+  },
+  {
+    "business_name": "K-Market Kilo",
+    "business_type": "Grocery store",
+    "contact_info": "+358 20 7705140",
+    "location": "Kilonpuistonkatu 14, 02610 Espoo, Finland",
+    "source_url": "https://www.google.com/maps/search/?api=1&query=K-Market%20Kilo&query_place_id=ChIJBXaqxyn0jUYRQGn2ZOagqZE",
+    "status": "New",
+    "id": "977db57a-2423-4f39-8606-3a1a1b850b5d",
+    "created_at": "2026-05-25T13:39:45.890Z"
+  },
+  {
+    "business_name": "Tian Tian Market 天天超市 - Aldgate",
+    "business_type": "Chinese supermarket",
+    "contact_info": "No phone",
+    "location": "18 Piazza Walk, London E1 8ZF, United Kingdom",
+    "source_url": "https://www.google.com/maps/search/?api=1&query=Tian%20Tian%20Market%20%E5%A4%A9%E5%A4%A9%E8%B6%85%E5%B8%82%20-%20Aldgate&query_place_id=ChIJ7Wh0A0cDdkgRnmqjamcZr4k",
+    "status": "New",
+    "id": "f8531c98-893b-4fa7-8df7-ed90d352a9d1",
+    "created_at": "2026-05-25T13:39:45.890Z"
+  },
+  {
+    "business_name": "Stockmann Turku",
+    "business_type": "Department store",
+    "contact_info": "+358 9 1211",
+    "location": "Yliopistonkatu 22, 20100 Turku, Finland",
+    "source_url": "https://www.google.com/maps/search/?api=1&query=Stockmann%20Turku&query_place_id=ChIJZ-TVSfl2jEYRSFFP8c5z320",
+    "status": "New",
+    "id": "5e0c2d04-7a4c-4a4c-859b-d54c2ce3a63d",
+    "created_at": "2026-05-25T13:39:45.890Z"
+  },
+  {
+    "business_name": "Tian Tian Market - Kings Cross",
+    "business_type": "Asian grocery store",
+    "contact_info": "No phone",
+    "location": "200c Pentonville Rd, London N1 9NG, United Kingdom",
+    "source_url": "https://www.google.com/maps/search/?api=1&query=Tian%20Tian%20Market%20-%20Kings%20Cross&query_place_id=ChIJ0Wg7utgbdkgRY9-FW6FBbnA",
+    "status": "New",
+    "id": "eeb70be1-92c2-4c9d-a4ba-4ab09224a1b0",
+    "created_at": "2026-05-25T13:39:45.890Z"
   }
 ]

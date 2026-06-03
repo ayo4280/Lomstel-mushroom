@@ -1,13 +1,46 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { createClient } from '@/utils/supabase/server';
+
 // POST /api/payments/paystack/initialize
 export async function POST(req: NextRequest) {
   try {
-    const body = await req.json();
-    const { email, amount, currency, orderId, metadata } = body;
+    const supabase = await createClient();
+    const { data: { user }, error: userError } = await supabase.auth.getUser();
 
-    if (!email || !amount || !orderId) {
+    if (userError || !user) {
+      return NextResponse.json({ error: 'Unauthorized. Please log in.' }, { status: 401 });
+    }
+
+    const body = await req.json();
+    const { amount, currency, metadata } = body;
+
+    if (!amount) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
+
+    // Insert order into DB
+    const { data: order, error: dbError } = await supabase
+      .from('payment_orders')
+      .insert({
+        buyer_id: user.id,
+        buyer_email: user.email,
+        buyer_name: user.user_metadata?.full_name || 'Buyer',
+        product_type: 'DRY', // Hardcoded for demo, normally from metadata
+        quantity_kg: metadata?.available ? parseInt(metadata.available) : 100,
+        price_per_kg: amount / (metadata?.available ? parseInt(metadata.available) : 100),
+        total_amount: amount,
+        payment_provider: 'paystack',
+        payment_status: 'pending'
+      })
+      .select('id')
+      .single();
+
+    if (dbError) {
+      console.error('DB Insert Error:', dbError);
+      return NextResponse.json({ error: 'Failed to create order in database' }, { status: 500 });
+    }
+
+    const orderId = order.id;
 
     const response = await fetch('https://api.paystack.co/transaction/initialize', {
       method: 'POST',
@@ -16,7 +49,7 @@ export async function POST(req: NextRequest) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        email,
+        email: user.email,
         amount: Math.round(amount * 100), // Paystack uses kobo (smallest unit)
         currency: currency || 'NGN',
         reference: orderId,

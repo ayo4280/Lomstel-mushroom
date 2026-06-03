@@ -81,7 +81,7 @@ export default function LoginPage() {
     
     // We create standard emails for testing, e.g. admin@lomstel.com
     const demoEmail = `${demoRole.toLowerCase()}@lomstel.com`;
-    const demoPass = 'Lomstel2026!';
+    const demoPass = '123456';
     
     try {
       // Try logging in first

@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/utils/supabase/client';
-import { ShoppingCart, Droplets, Wind, Globe, CreditCard, CheckCircle, X, Loader2, Package } from 'lucide-react';
+import { ShoppingCart, Globe, CreditCard, X, Loader2, Package } from 'lucide-react';
 
 type CartItem = {
   product_type: 'WET' | 'DRY';
@@ -11,16 +11,17 @@ type CartItem = {
   currency: 'NGN' | 'USD';
 };
 
-const PRODUCTS = [
+type Stock = { wetKg: number; dryKg: number };
+
+const BASE_PRODUCTS = [
   {
     id: 'dry-bulk',
     name: 'Dry Oyster Mushrooms',
     type: 'DRY' as const,
-    description: 'Premium grade A dried white oyster mushrooms. Ideal for industrial food processors, nutraceuticals, and export. Certified, 2-ton surplus available for immediate dispatch.',
-    priceNGN: 12000,
-    priceUSD: 8,
+    description: 'Premium grade A dried white oyster mushrooms. Ideal for industrial food processors, nutraceuticals, and export. Certified stock available for immediate dispatch.',
+    priceNGN: 20000,
+    priceUSD: 13,
     unit: 'per kg',
-    badge: '2,000 kg Available',
     badgeColor: '#2d6a4f',
     icon: '🍂',
     minOrder: 10,
@@ -30,27 +31,91 @@ const PRODUCTS = [
     name: 'Fresh Wet Oyster Mushrooms',
     type: 'WET' as const,
     description: 'Farm-fresh wet oyster mushrooms for local restaurants, hotels, and retailers. Harvested to order, delivered within 24 hours in Lagos.',
-    priceNGN: 3500,
-    priceUSD: 2.5,
+    priceNGN: 5000,
+    priceUSD: 3.3,
     unit: 'per kg',
-    badge: 'Fresh Harvest',
     badgeColor: '#1a6db5',
     icon: '💧',
-    minOrder: 5,
+    minOrder: 10,
   },
 ];
 
+// Mirrors exactly how Inventory computes totals:
+// harvests table  = wet entries from Harvest Log + dry/wet entries from Inventory
+// mushroom_products table = sale deductions (stored as negative values)
+async function fetchStock(): Promise<Stock> {
+  const [{ data: harvests }, { data: products }] = await Promise.all([
+    supabase.from('harvests').select('weight, harvest_type'),
+    supabase.from('mushroom_products').select('quantity_kg, product_type'),
+  ]);
+
+  let wetKg = 0;
+  let dryKg = 0;
+
+  (harvests || []).forEach((h: any) => {
+    if (h.harvest_type === 'DRY') {
+      dryKg += Number(h.weight);
+    } else {
+      wetKg += Number(h.weight);
+    }
+  });
+
+  (products || []).forEach((p: any) => {
+    if (p.product_type === 'WET') {
+      wetKg += Number(p.quantity_kg); // negative = sale deduction
+    } else {
+      dryKg += Number(p.quantity_kg); // negative = sale deduction
+    }
+  });
+
+  // Seed dry stock with 2000kg if no dry data exists (matches Inventory logic)
+  const hasDryData = (harvests || []).some((h: any) => h.harvest_type === 'DRY') ||
+                     (products || []).some((p: any) => p.product_type === 'DRY');
+  if (dryKg === 0 && !hasDryData) dryKg = 2000;
+
+  return { wetKg: Math.max(0, wetKg), dryKg: Math.max(0, dryKg) };
+}
+
 export default function MarketplacePage() {
   const [user, setUser] = useState<any>(null);
-  const [selectedProduct, setSelectedProduct] = useState<typeof PRODUCTS[0] | null>(null);
+  const [stock, setStock] = useState<Stock>({ wetKg: 0, dryKg: 0 });
+  const [stockLoading, setStockLoading] = useState(true);
+  const [selectedProduct, setSelectedProduct] = useState<typeof BASE_PRODUCTS[0] | null>(null);
   const [quantity, setQuantity] = useState(10);
   const [currency, setCurrency] = useState<'NGN' | 'USD'>('NGN');
   const [isProcessing, setIsProcessing] = useState(false);
   const [orderSuccess, setOrderSuccess] = useState(false);
   const [error, setError] = useState('');
 
+  // Derive live products from base + stock
+  const PRODUCTS = BASE_PRODUCTS.map(p => ({
+    ...p,
+    badge: p.type === 'DRY'
+      ? stockLoading ? 'Loading...' : `${stock.dryKg.toLocaleString()} kg Available`
+      : stockLoading ? 'Loading...' : `${stock.wetKg.toLocaleString()} kg Available`,
+    availableKg: p.type === 'DRY' ? stock.dryKg : stock.wetKg,
+  }));
+
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => setUser(data.user));
+
+    // Initial fetch
+    fetchStock().then(s => { setStock(s); setStockLoading(false); });
+
+    // Realtime on BOTH tables — marketplace updates instantly when:
+    // - Farm worker logs harvest (harvests table)
+    // - Admin records a sale/dry entry in Inventory (mushroom_products table)
+    const channel = supabase
+      .channel('marketplace_stock')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'harvests' }, () => {
+        fetchStock().then(s => setStock(s));
+      })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'mushroom_products' }, () => {
+        fetchStock().then(s => setStock(s));
+      })
+      .subscribe();
+
+    return () => { supabase.removeChannel(channel); };
   }, []);
 
   const openOrderModal = (product: typeof PRODUCTS[0]) => {
@@ -80,31 +145,13 @@ export default function MarketplacePage() {
     setError('');
 
     try {
-      // 1. Create order in DB
-      const { data: order, error: orderErr } = await supabase.from('payment_orders').insert({
-        buyer_id: user.id,
-        buyer_name: user.user_metadata?.full_name || user.email,
-        buyer_email: user.email,
-        product_type: selectedProduct.type,
-        quantity_kg: quantity,
-        price_per_kg: pricePerKg,
-        total_amount: totalAmount,
-        currency: 'NGN',
-        payment_provider: 'paystack',
-        payment_status: 'pending',
-      }).select().single();
-
-      if (orderErr || !order) throw new Error(orderErr?.message || 'Failed to create order');
-
-      // 2. Initialize Paystack payment
+      // Initialize Paystack payment (order will be created securely on server)
       const res = await fetch('/api/payments/paystack/initialize', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          email: user.email,
           amount: totalAmount,
           currency: 'NGN',
-          orderId: order.id,
           metadata: {
             product: selectedProduct.name,
             quantity_kg: quantity,
@@ -115,7 +162,7 @@ export default function MarketplacePage() {
       const { authorization_url, error: initErr } = await res.json();
       if (initErr) throw new Error(initErr);
 
-      // 3. Redirect to Paystack
+      // Redirect to Paystack secure checkout
       window.location.href = authorization_url;
     } catch (err: any) {
       setError(err.message || 'Payment failed. Please try again.');
@@ -129,32 +176,13 @@ export default function MarketplacePage() {
     setError('');
 
     try {
-      // 1. Create order in DB
-      const { data: order, error: orderErr } = await supabase.from('payment_orders').insert({
-        buyer_id: user.id,
-        buyer_name: user.user_metadata?.full_name || user.email,
-        buyer_email: user.email,
-        product_type: selectedProduct.type,
-        quantity_kg: quantity,
-        price_per_kg: pricePerKg,
-        total_amount: totalAmount,
-        currency: currency,
-        payment_provider: 'flutterwave',
-        payment_status: 'pending',
-      }).select().single();
-
-      if (orderErr || !order) throw new Error(orderErr?.message || 'Failed to create order');
-
-      // 2. Initialize Flutterwave payment
+      // Initialize Flutterwave payment (order will be created securely on server)
       const res = await fetch('/api/payments/flutterwave/initialize', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          email: user.email,
           amount: totalAmount,
           currency: currency,
-          orderId: order.id,
-          customerName: user.user_metadata?.full_name || user.email,
           metadata: {
             product: selectedProduct.name,
             quantity_kg: quantity,
@@ -165,7 +193,7 @@ export default function MarketplacePage() {
       const { payment_link, error: initErr } = await res.json();
       if (initErr) throw new Error(initErr);
 
-      // 3. Redirect to Flutterwave
+      // Redirect to Flutterwave secure checkout
       window.location.href = payment_link;
     } catch (err: any) {
       setError(err.message || 'Payment failed. Please try again.');
@@ -264,13 +292,14 @@ export default function MarketplacePage() {
             {/* Quantity */}
             <div style={{ marginBottom: '1.5rem' }}>
               <label style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', display: 'block', marginBottom: '0.5rem' }}>
-                Quantity (kg) — Min: {selectedProduct.minOrder} kg
+                Quantity (kg) — Min: {selectedProduct.minOrder} kg · Available: <span style={{ color: 'var(--color-forest-600)' }}>{selectedProduct.availableKg.toLocaleString()} kg</span>
               </label>
               <input
                 type="number"
                 min={selectedProduct.minOrder}
+                max={selectedProduct.availableKg}
                 value={quantity}
-                onChange={e => setQuantity(Math.max(selectedProduct.minOrder, Number(e.target.value)))}
+                onChange={e => setQuantity(Math.min(selectedProduct.availableKg, Math.max(selectedProduct.minOrder, Number(e.target.value))))}
                 style={{ width: '100%', padding: '0.875rem 1rem', borderRadius: '10px', border: '2px solid rgba(0,0,0,0.1)', fontSize: '1.1rem', fontWeight: 700, outline: 'none', boxSizing: 'border-box' }}
               />
             </div>

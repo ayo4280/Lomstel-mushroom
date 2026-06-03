@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { supabase } from '@/utils/supabase/client';
-import { LayoutDashboard, Boxes, FileText, Settings, LogOut, User, Loader2, Bot, Store, ShoppingCart } from 'lucide-react';
+import { LayoutDashboard, Boxes, FileText, Settings, LogOut, User, Loader2, Bot, Store, ShoppingCart, Vault, Sprout, MapPin, UserCircle } from 'lucide-react';
 
 export default function DashboardLayout({
   children,
@@ -116,9 +116,32 @@ export default function DashboardLayout({
               </>
             )}
 
+            <Link href="/dashboard/vault" className={`nav-link ${pathname === '/dashboard/vault' ? 'active' : ''}`}>
+              <Vault size={20} />
+              Vault
+            </Link>
+
+            {showAdminFeatures && (
+              <>
+                <Link href="/dashboard/harvest" className={`nav-link ${pathname === '/dashboard/harvest' ? 'active' : ''}`}>
+                  <Sprout size={20} />
+                  Harvest Log
+                </Link>
+                <Link href="/dashboard/tracking" className={`nav-link ${pathname === '/dashboard/tracking' ? 'active' : ''}`}>
+                  <MapPin size={20} />
+                  Tracking
+                </Link>
+              </>
+            )}
+
             <Link href="/dashboard/ai-agent" className={`nav-link ${pathname === '/dashboard/ai-agent' ? 'active' : ''}`}>
               <Bot size={20} />
               AI Agent
+            </Link>
+
+            <Link href="/dashboard/profile" className={`nav-link ${pathname === '/dashboard/profile' ? 'active' : ''}`}>
+              <UserCircle size={20} />
+              Profile
             </Link>
 
             <Link href="/dashboard/settings" className={`nav-link ${pathname === '/dashboard/settings' ? 'active' : ''}`}>

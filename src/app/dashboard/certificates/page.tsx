@@ -111,6 +111,26 @@ export default function CertificatesPage() {
     }
   };
 
+  const handleDelete = async (cert: Certificate) => {
+    if (!confirm(`Are you sure you want to delete "${cert.title}"?`)) return;
+
+    try {
+      const fileName = cert.file_url.split('/').pop();
+      if (fileName) {
+        const { error: storageError } = await supabase.storage.from('certificates').remove([fileName]);
+        if (storageError) console.error('Storage deletion error:', storageError);
+      }
+
+      const { error: dbError } = await supabase.from('certificates').delete().eq('id', cert.id);
+      if (dbError) throw dbError;
+
+      await fetchUserRoleAndCertificates();
+    } catch (error: any) {
+      console.error('Error deleting certificate:', error?.message || error);
+      alert('Failed to delete certificate: ' + (error?.message || 'Unknown error'));
+    }
+  };
+
   const canUpload = true; // userRole === 'ADMIN' || userRole === 'FARM_WORKER';
 
   return (
@@ -189,6 +209,16 @@ export default function CertificatesPage() {
                       <Download size={16} />
                       View
                     </a>
+                    {userRole === 'ADMIN' && (
+                      <button
+                        onClick={() => handleDelete(cert)}
+                        className="btn-secondary"
+                        style={{ padding: '0.5rem 1rem', display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.9rem', color: '#e74c3c', borderColor: '#fadbd8', backgroundColor: '#fdf2e9' }}
+                      >
+                        <Trash2 size={16} />
+                        Delete
+                      </button>
+                    )}
                   </div>
                 </div>
               ))}

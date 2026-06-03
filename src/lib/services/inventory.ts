@@ -1,4 +1,4 @@
-import { supabase } from "../supabase";
+import { supabase } from "@/utils/supabase/client";
 
 export interface HarvestLog {
   id?: string;

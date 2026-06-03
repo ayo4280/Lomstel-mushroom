@@ -1,13 +1,15 @@
 "use client"
 
 import { useState, useEffect } from "react";
-import { fetchCertificates, uploadCertificate, Certificate } from "@/lib/services/vault";
+import { fetchCertificates, uploadCertificate, deleteCertificate, Certificate } from "@/lib/services/vault";
+import { supabase } from "@/utils/supabase/client";
 
 export default function VaultPage() {
   const [documents, setDocuments] = useState<Certificate[]>([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [userRole, setUserRole] = useState<string>('BUYER');
 
   // Form State
   const [file, setFile] = useState<File | null>(null);
@@ -25,6 +27,16 @@ export default function VaultPage() {
   };
 
   useEffect(() => {
+    const checkRole = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).single();
+        if (profile?.role) {
+          setUserRole(profile.role);
+        }
+      }
+    };
+    checkRole();
     loadCertificates();
   }, []);
 
@@ -58,14 +70,26 @@ export default function VaultPage() {
             <span className="text-primary font-bold tracking-widest text-[10px] uppercase block mb-1">Global Compliance</span>
             <h2 className="text-3xl font-extrabold tracking-tight text-on-surface">Certificate Vault</h2>
           </div>
-          <div className="hidden md:flex gap-2">
+          <div className="hidden md:flex gap-3">
             <button 
-              onClick={() => setIsModalOpen(true)}
-              className="bg-primary text-white px-4 py-2 rounded-xl text-sm font-semibold flex items-center gap-2 hover:bg-primary-container transition-colors shadow-lg shadow-primary/10"
+              className="glass text-primary px-4 py-2 rounded-xl text-sm font-semibold flex items-center gap-2 hover:bg-white/60 transition-all shadow-sm"
+              onClick={() => {
+                navigator.clipboard.writeText(window.location.href);
+                alert("Vault link copied to clipboard!");
+              }}
             >
-              <span className="material-symbols-outlined text-[18px]">upload_file</span>
-              Upload New CoA
+              <span className="material-symbols-outlined text-[18px]">share</span>
+              Share Vault Link
             </button>
+            {['ADMIN', 'FARM_WORKER'].includes(userRole) && (
+              <button 
+                onClick={() => setIsModalOpen(true)}
+                className="bg-primary text-white px-4 py-2 rounded-xl text-sm font-semibold flex items-center gap-2 hover:bg-primary-container hover:text-primary transition-colors shadow-lg shadow-primary/10"
+              >
+                <span className="material-symbols-outlined text-[18px]">upload_file</span>
+                Upload New CoA
+              </button>
+            )}
           </div>
         </div>
         <p className="text-on-surface-variant max-w-xl body-md leading-relaxed">
@@ -75,7 +99,7 @@ export default function VaultPage() {
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-        <div className="bg-surface-container-low p-6 rounded-xl relative overflow-hidden group border border-outline-variant/10">
+        <div className="glass p-6 rounded-xl relative overflow-hidden group border border-outline-variant/10">
           <div className="absolute -right-4 -top-4 opacity-5 group-hover:scale-110 transition-transform duration-500">
             <span className="material-symbols-outlined text-[120px] fill-current">verified</span>
           </div>
@@ -85,12 +109,12 @@ export default function VaultPage() {
             <span className="bg-primary-fixed text-on-primary-fixed-variant text-[10px] px-2 py-0.5 rounded-full font-bold">ALL VERIFIED</span>
           </div>
         </div>
-        <div className="bg-surface-container-low p-6 rounded-xl border border-outline-variant/10">
+        <div className="glass p-6 rounded-xl border border-outline-variant/10">
           <p className="text-xs text-on-surface-variant font-medium mb-1 uppercase tracking-widest">Expiring Soon</p>
           <h3 className="text-4xl font-bold text-tertiary-container">02</h3>
           <p className="text-[11px] text-on-surface-variant mt-4 font-medium">Next: Organic Renewal (14 days)</p>
         </div>
-        <div className="bg-surface-container-low p-6 rounded-xl border border-outline-variant/10">
+        <div className="glass p-6 rounded-xl border border-outline-variant/10">
           <p className="text-xs text-on-surface-variant font-medium mb-1 uppercase tracking-widest">Vault Storage</p>
           <h3 className="text-4xl font-bold text-secondary">82%</h3>
           <div className="w-full bg-outline-variant/20 h-1.5 rounded-full mt-5 overflow-hidden">
@@ -111,7 +135,7 @@ export default function VaultPage() {
           </div>
         ) : (
           documents.map((doc) => (
-            <div key={doc.id} className="group bg-surface-container-lowest hover:bg-white transition-all duration-300 rounded-xl p-5 flex flex-col md:flex-row md:items-center gap-6 shadow-sm hover:shadow-md border border-outline-variant/5">
+            <div key={doc.id} className="group glass hover:-translate-y-0.5 transition-all duration-300 rounded-xl p-5 flex flex-col md:flex-row md:items-center gap-6 shadow-sm hover:shadow-md border border-outline-variant/5">
               <div className={`w-14 h-14 ${doc.colorClass || 'bg-surface-container-highest text-on-surface-variant'} rounded-xl flex items-center justify-center shrink-0`}>
                 <span className="material-symbols-outlined text-3xl">{doc.icon || 'description'}</span>
               </div>
@@ -152,6 +176,23 @@ export default function VaultPage() {
                 >
                   <span className="material-symbols-outlined text-[18px]">visibility</span> View File
                 </a>
+                {['ADMIN', 'FARM_WORKER'].includes(userRole) && (
+                  <button
+                    onClick={async () => {
+                      if (!confirm(`Delete "${doc.title}"? This cannot be undone.`)) return;
+                      const res = await deleteCertificate(doc.id, doc.file_url);
+                      if (res.success) {
+                        await loadCertificates();
+                      } else {
+                        alert(`Delete failed: ${res.error}`);
+                      }
+                    }}
+                    className="flex-none border border-red-200 hover:bg-red-50 text-red-600 px-4 py-2 rounded-xl text-sm font-semibold transition-colors flex items-center justify-center gap-2"
+                    title="Delete certificate"
+                  >
+                    <span className="material-symbols-outlined text-[18px]">delete</span> Delete
+                  </button>
+                )}
               </div>
             </div>
           ))
