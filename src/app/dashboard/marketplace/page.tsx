@@ -251,9 +251,17 @@ export default function MarketplacePage() {
 
             <button
               onClick={() => openOrderModal(product)}
-              style={{ backgroundColor: 'var(--color-forest-600)', color: 'white', border: 'none', borderRadius: '12px', padding: '1rem', fontSize: '1rem', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', transition: 'background 0.2s' }}
-              onMouseEnter={e => (e.currentTarget.style.backgroundColor = 'var(--color-forest-700)')}
-              onMouseLeave={e => (e.currentTarget.style.backgroundColor = 'var(--color-forest-600)')}
+              style={{ backgroundColor: product.badgeColor, color: 'white', border: 'none', borderRadius: '12px', padding: '1rem', fontSize: '1rem', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', transition: 'all 0.2s', boxShadow: '0 4px 14px 0 rgba(0,0,0,0.1)' }}
+              onMouseEnter={e => {
+                e.currentTarget.style.filter = 'brightness(1.15)';
+                e.currentTarget.style.transform = 'translateY(-2px)';
+                e.currentTarget.style.boxShadow = '0 6px 20px rgba(0,0,0,0.15)';
+              }}
+              onMouseLeave={e => {
+                e.currentTarget.style.filter = 'brightness(1)';
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.boxShadow = '0 4px 14px 0 rgba(0,0,0,0.1)';
+              }}
             >
               <Package size={20} /> Place Order
             </button>
