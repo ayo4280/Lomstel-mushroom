@@ -77,7 +77,7 @@ export default function InventoryForm({ onSuccess }: { onSuccess: () => void }) 
             <button type="button" style={btnStyle(actionType === 'wet_harvest', 'var(--color-forest-500)')} onClick={() => setActionType('wet_harvest')}>
               Wet Harvest
             </button>
-            <button type="button" style={btnStyle(actionType === 'dry_harvest', 'var(--color-forest-700)')} onClick={() => setActionType('dry_harvest')}>
+            <button type="button" style={btnStyle(actionType === 'dry_harvest', 'var(--color-earth-700)')} onClick={() => setActionType('dry_harvest')}>
               Dry Harvest
             </button>
           </div>
