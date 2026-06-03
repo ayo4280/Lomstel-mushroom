@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 const apifyKey = process.env.APIFY_API_KEY!;
 
 const supabase = createClient(supabaseUrl, supabaseKey, { auth: { persistSession: false } });
@@ -115,7 +115,8 @@ export async function POST() {
     .single();
 
   if (taskError || !taskData) {
-    return NextResponse.json({ error: 'Failed to create task' }, { status: 500 });
+    console.error("Supabase Error creating task:", taskError);
+    return NextResponse.json({ error: 'Failed to create task', details: taskError }, { status: 500 });
   }
 
   // Fire and forget
