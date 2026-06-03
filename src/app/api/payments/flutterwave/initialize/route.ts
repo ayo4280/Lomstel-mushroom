@@ -55,7 +55,7 @@ export async function POST(req: NextRequest) {
         tx_ref: orderId,
         amount,
         currency: currency || 'USD',
-        redirect_url: `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/dashboard/orders?payment=success`,
+        redirect_url: `${process.env.NEXT_PUBLIC_APP_URL || 'https://lomstel-mushroom.vercel.app'}/dashboard/orders?payment=success`,
         customer: {
           email: user.email,
           name: user.user_metadata?.full_name || 'Customer',

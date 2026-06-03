@@ -57,7 +57,7 @@ export async function POST(req: NextRequest) {
           order_id: orderId,
           ...metadata,
         },
-        callback_url: `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/dashboard/orders?payment=success`,
+        callback_url: `${process.env.NEXT_PUBLIC_APP_URL || 'https://lomstel-mushroom.vercel.app'}/dashboard/orders?payment=success`,
       }),
     });
 
