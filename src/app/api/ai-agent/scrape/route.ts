@@ -77,17 +77,25 @@ async function runApifyScraperBackground(taskId: string) {
       ];
     }
 
-    const { error } = await supabase.from('leads').insert(leads);
-    if (error) {
-      console.error('Supabase error inserting leads:', error.message);
+    // Prevent duplicates by checking existing leads
+    const { data: existingLeads } = await supabase.from('leads').select('business_name');
+    const existingNames = new Set((existingLeads || []).map((l: any) => l.business_name.toLowerCase()));
+    
+    const uniqueLeads = leads.filter(lead => !existingNames.has(lead.business_name.toLowerCase()));
+
+    if (uniqueLeads.length > 0) {
+      const { error } = await supabase.from('leads').insert(uniqueLeads);
+      if (error) {
+        console.error('Supabase error inserting leads:', error.message);
+      }
     }
 
     await supabase
       .from('ai_tasks')
       .update({
         status: 'Completed',
-        leads_found: leads.length,
-        logs: `Found ${leads.length} leads. Scraping finished successfully.`,
+        leads_found: uniqueLeads.length,
+        logs: `Found ${leads.length} leads. Filtered out ${leads.length - uniqueLeads.length} duplicates. Inserted ${uniqueLeads.length} new leads.`,
         completed_at: new Date().toISOString()
       })
       .eq('id', taskId);
