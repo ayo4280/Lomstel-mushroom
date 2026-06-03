@@ -80,7 +80,7 @@ export default function MarketplacePage() {
   const [user, setUser] = useState<any>(null);
   const [stock, setStock] = useState<Stock>({ wetKg: 0, dryKg: 0 });
   const [stockLoading, setStockLoading] = useState(true);
-  const [selectedProduct, setSelectedProduct] = useState<typeof BASE_PRODUCTS[0] | null>(null);
+  const [selectedProduct, setSelectedProduct] = useState<(typeof BASE_PRODUCTS[0] & { availableKg: number; badge: string }) | null>(null);
   const [quantity, setQuantity] = useState(10);
   const [currency, setCurrency] = useState<'NGN' | 'USD'>('NGN');
   const [isProcessing, setIsProcessing] = useState(false);
@@ -292,14 +292,14 @@ export default function MarketplacePage() {
             {/* Quantity */}
             <div style={{ marginBottom: '1.5rem' }}>
               <label style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', display: 'block', marginBottom: '0.5rem' }}>
-                Quantity (kg) — Min: {selectedProduct.minOrder} kg · Available: <span style={{ color: 'var(--color-forest-600)' }}>{selectedProduct.availableKg.toLocaleString()} kg</span>
+                Quantity (kg) — Min: {selectedProduct.minOrder} kg · Available: <span style={{ color: 'var(--color-forest-600)' }}>{(selectedProduct.availableKg ?? 0).toLocaleString()} kg</span>
               </label>
               <input
                 type="number"
                 min={selectedProduct.minOrder}
-                max={selectedProduct.availableKg}
+                max={selectedProduct.availableKg ?? 999999}
                 value={quantity}
-                onChange={e => setQuantity(Math.min(selectedProduct.availableKg, Math.max(selectedProduct.minOrder, Number(e.target.value))))}
+                onChange={e => setQuantity(Math.min(selectedProduct.availableKg ?? 999999, Math.max(selectedProduct.minOrder, Number(e.target.value))))}
                 style={{ width: '100%', padding: '0.875rem 1rem', borderRadius: '10px', border: '2px solid rgba(0,0,0,0.1)', fontSize: '1.1rem', fontWeight: 700, outline: 'none', boxSizing: 'border-box' }}
               />
             </div>

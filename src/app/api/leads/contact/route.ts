@@ -74,7 +74,7 @@ export async function POST(req: Request) {
         // Continue anyway to mark as contacted for demonstration
       }
     } else {
-      console.log(`[SIMULATED EMAIL] To: ${lead.business_name} | Subject: ${emailSubject}`);
+      console.log(`[SIMULATED EMAIL] To: ${lead.business_name} | Subject: ${finalSubject}`);
     }
 
     // 3. Update the lead status to 'Contacted'
