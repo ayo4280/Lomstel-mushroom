@@ -4,7 +4,7 @@ import { createClient } from '@supabase/supabase-js';
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 const apifyKey = process.env.APIFY_API_KEY!;
-const tavilyKey = process.env.TAVILY_API_KEY!;
+const firecrawlKey = process.env.FIRECRAWL_API_KEY!;
 
 const supabase = createClient(supabaseUrl, supabaseKey, { auth: { persistSession: false } });
 
@@ -16,11 +16,11 @@ const MAPS_QUERIES = [
   'restaurants Lagos Nigeria',
 ];
 
-// --- WEB SEARCH (for category/concept-based leads like aggregators) ---
+// --- WEB SEARCH via Firecrawl (for category/concept-based leads like aggregators) ---
 const WEB_QUERIES = [
-  'top B2B commercial food aggregator companies Nigeria 2024',
-  'on-demand food delivery aggregator app companies Nigeria like Chowdeck Glovo',
-  'dedicated agritech direct-from-farm aggregator platforms Nigeria 2024',
+  { query: 'B2B commercial food aggregator companies Nigeria', type: 'B2B Commercial Aggregator' },
+  { query: 'on-demand food delivery aggregator app companies Nigeria Chowdeck Glovo', type: 'On-Demand App Aggregator' },
+  { query: 'agritech direct-from-farm aggregator platforms Nigeria 2024', type: 'Agritech / Farm Aggregator' },
 ];
 
 async function fetchGoogleMapsLeads(): Promise<any[]> {
@@ -79,40 +79,34 @@ async function fetchGoogleMapsLeads(): Promise<any[]> {
 async function fetchWebSearchLeads(): Promise<any[]> {
   const leads: any[] = [];
 
-  for (const query of WEB_QUERIES) {
+  for (const { query, type } of WEB_QUERIES) {
     try {
-      const res = await fetch('https://api.tavily.com/search', {
+      const res = await fetch('https://api.firecrawl.dev/v1/search', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          api_key: tavilyKey,
-          query,
-          search_depth: 'basic',
-          max_results: 5,
-          include_answer: false,
-        }),
+        headers: {
+          'Authorization': `Bearer ${firecrawlKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ query, limit: 5 }),
       });
 
-      if (!res.ok) continue;
+      if (!res.ok) {
+        console.error(`Firecrawl search failed for query "${query}": ${res.status}`);
+        continue;
+      }
 
-      const data = await res.json();
-      const results = data.results || [];
+      const data = await res.json() as any;
+      const results: any[] = data.data || [];
 
       for (const result of results) {
-        // Derive a business type tag from the query
-        let business_type = 'Aggregator';
-        if (query.includes('B2B')) business_type = 'B2B Commercial Aggregator';
-        else if (query.includes('on-demand') || query.includes('delivery')) business_type = 'On-Demand App Aggregator';
-        else if (query.includes('agritech') || query.includes('farm')) business_type = 'Agritech / Farm Aggregator';
+        // Extract a clean company name from the page title (e.g. "Vendease | Food for Restaurants" → "Vendease")
+        const rawTitle = result.title || '';
+        const business_name = rawTitle.split(/[-|–:]/)[0].trim();
 
-        // Extract a clean company name from the title (e.g. "Chowdeck | Food Delivery" → "Chowdeck")
-        const rawTitle = result.title || 'Unknown';
-        const business_name = rawTitle.split(/[-|–:]/)[0].trim() || rawTitle;
-
-        if (business_name && business_name !== 'Unknown') {
+        if (business_name && business_name.length > 2) {
           leads.push({
             business_name,
-            business_type,
+            business_type: type,
             contact_info: 'See website',
             location: 'Nigeria / Online',
             source_url: result.url || '',
@@ -121,7 +115,7 @@ async function fetchWebSearchLeads(): Promise<any[]> {
         }
       }
     } catch (err) {
-      console.error(`Web search error for query "${query}":`, err);
+      console.error(`Firecrawl error for query "${query}":`, err);
     }
   }
 
