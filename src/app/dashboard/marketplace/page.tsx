@@ -23,7 +23,7 @@ const BASE_PRODUCTS = [
     priceUSD: 13,
     unit: 'per kg',
     badgeColor: '#2d6a4f',
-    icon: <img src="/dry-oyster.png" alt="Dry White Oyster Mushroom" style={{ width: '56px', height: '56px', objectFit: 'cover', borderRadius: '12px', verticalAlign: 'middle' }} />,
+    icon: '🍂',
     minOrder: 10,
   },
   {
@@ -35,7 +35,7 @@ const BASE_PRODUCTS = [
     priceUSD: 3.3,
     unit: 'per kg',
     badgeColor: '#1a6db5',
-    icon: '💧',
+    icon: <img src="/wet-oyster.png" alt="Fresh White Oyster Mushroom" style={{ width: '80px', height: '80px', objectFit: 'cover', borderRadius: '16px', boxShadow: '0 4px 14px rgba(0,0,0,0.15)', verticalAlign: 'middle' }} />,
     minOrder: 10,
   },
 ];
