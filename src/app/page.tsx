@@ -52,14 +52,13 @@ export default function LandingPage() {
           position: 'relative',
           zIndex: 1,
           textAlign: 'center',
-          color: 'white',
           maxWidth: '800px',
           padding: '0 2rem'
         }}>
-          <h1 style={{ fontSize: '4.5rem', fontWeight: 900, marginBottom: '1.5rem', lineHeight: 1.1, letterSpacing: '-0.02em' }}>
+          <h1 style={{ fontSize: '4.5rem', fontWeight: 900, marginBottom: '1.5rem', lineHeight: 1.1, letterSpacing: '-0.02em', color: '#FFD700', textShadow: '0 4px 20px rgba(0,0,0,0.6)' }}>
             Premium Oyster Mushrooms, Cultivated with Precision.
           </h1>
-          <p style={{ fontSize: '1.4rem', marginBottom: '2.5rem', opacity: 0.95, fontWeight: 400, lineHeight: 1.5 }}>
+          <p style={{ fontSize: '1.4rem', marginBottom: '2.5rem', opacity: 0.95, fontWeight: 500, lineHeight: 1.5, color: '#ffffff', textShadow: '0 2px 10px rgba(0,0,0,0.5)' }}>
             From farm to table, experience the highest grade wet and dry oyster mushrooms powered by data-driven agriculture.
           </p>
           <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
