@@ -363,6 +363,7 @@ export default function AIAgentDashboard() {
                 <thead>
                   <tr style={{ borderBottom: '2px solid rgba(0,0,0,0.05)', color: 'var(--text-muted)' }}>
                     <th style={{ padding: '1rem 0.5rem' }}>Business Name</th>
+                    <th style={{ padding: '1rem 0.5rem' }}>Type</th>
                     <th style={{ padding: '1rem 0.5rem' }}>Contact</th>
                     <th style={{ padding: '1rem 0.5rem' }}>Location</th>
                     <th style={{ padding: '1rem 0.5rem' }}>Status</th>
@@ -377,6 +378,28 @@ export default function AIAgentDashboard() {
                         <a href={lead.source_url} target="_blank" rel="noopener noreferrer" style={{ fontSize: '0.85rem', color: 'var(--color-forest-500)', display: 'inline-flex', alignItems: 'center', gap: '0.25rem' }}>
                           Source <ExternalLink size={12} />
                         </a>
+                      </td>
+                      <td style={{ padding: '1rem 0.5rem' }}>
+                        <span style={{
+                          display: 'inline-block',
+                          padding: '0.2rem 0.6rem',
+                          borderRadius: '6px',
+                          fontSize: '0.75rem',
+                          fontWeight: 700,
+                          whiteSpace: 'nowrap',
+                          backgroundColor:
+                            lead.business_type?.includes('B2B') ? '#e0f0ff' :
+                            lead.business_type?.includes('On-Demand') ? '#f0e8ff' :
+                            lead.business_type?.includes('Agritech') ? '#e8f5e9' :
+                            'var(--color-earth-100)',
+                          color:
+                            lead.business_type?.includes('B2B') ? '#0066cc' :
+                            lead.business_type?.includes('On-Demand') ? '#6600cc' :
+                            lead.business_type?.includes('Agritech') ? '#2d7a2d' :
+                            'var(--color-earth-700)',
+                        }}>
+                          {lead.business_type || 'Business'}
+                        </span>
                       </td>
                       <td style={{ padding: '1rem 0.5rem' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.9rem' }}>
