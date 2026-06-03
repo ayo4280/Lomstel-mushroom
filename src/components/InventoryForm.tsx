@@ -89,10 +89,10 @@ export default function InventoryForm({ onSuccess }: { onSuccess: () => void }) 
             🛒 Sales (Subtract from Stock)
           </label>
           <div style={{ display: 'flex', gap: '0.75rem' }}>
-            <button type="button" style={btnStyle(actionType === 'wet_sale', 'var(--color-accent)')} onClick={() => setActionType('wet_sale')}>
+            <button type="button" style={btnStyle(actionType === 'wet_sale', '#1a6db5')} onClick={() => setActionType('wet_sale')}>
               Wet Sale
             </button>
-            <button type="button" style={btnStyle(actionType === 'dry_sale', '#8B2500')} onClick={() => setActionType('dry_sale')}>
+            <button type="button" style={btnStyle(actionType === 'dry_sale', 'var(--color-accent)')} onClick={() => setActionType('dry_sale')}>
               Dry Sale
             </button>
           </div>
@@ -134,14 +134,34 @@ export default function InventoryForm({ onSuccess }: { onSuccess: () => void }) 
           type="submit"
           className="btn-primary"
           disabled={loading}
-          style={{ marginTop: '0.5rem', backgroundColor: isSale ? 'var(--color-accent)' : 'var(--color-forest-500)', boxShadow: isSale ? '0 4px 14px rgba(200,90,60,0.25)' : undefined }}
+          style={{
+            marginTop: '0.5rem',
+            backgroundColor: actionType === 'wet_harvest' ? 'var(--color-forest-500)' :
+                             actionType === 'dry_harvest' ? 'var(--color-earth-700)' :
+                             actionType === 'wet_sale' ? '#1a6db5' :
+                             'var(--color-accent)',
+            boxShadow: isSale ? '0 4px 14px rgba(200,90,60,0.25)' : undefined
+          }}
         >
           {loading ? 'Processing...' : `Record ${isWet ? 'Wet' : 'Dry'} ${isHarvest ? 'Harvest' : 'Sale'}`}
         </button>
 
         {/* Success Message */}
         {successMsg && (
-          <div style={{ padding: '0.85rem 1rem', borderRadius: '10px', backgroundColor: isHarvest ? 'var(--color-forest-100)' : '#FDECEA', color: isHarvest ? 'var(--color-forest-700)' : 'var(--color-accent)', fontWeight: 600, fontSize: '0.95rem' }}>
+          <div style={{
+            padding: '0.85rem 1rem',
+            borderRadius: '10px',
+            backgroundColor: actionType === 'wet_harvest' ? 'var(--color-forest-100)' :
+                             actionType === 'dry_harvest' ? 'var(--color-earth-200)' :
+                             actionType === 'wet_sale' ? '#eef2ff' :
+                             '#FDECEA',
+            color: actionType === 'wet_harvest' ? 'var(--color-forest-700)' :
+                   actionType === 'dry_harvest' ? 'var(--color-earth-900)' :
+                   actionType === 'wet_sale' ? '#1a6db5' :
+                   'var(--color-accent)',
+            fontWeight: 600,
+            fontSize: '0.95rem'
+          }}>
             {successMsg}
           </div>
         )}
