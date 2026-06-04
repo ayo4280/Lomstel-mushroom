@@ -34,7 +34,15 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Lead already contacted' }, { status: 400 });
     }
 
-    // 2. Send email via Resend (or simulate if missing API key)
+    // 2. Extract email address from contact_info
+    const emailMatch = lead.contact_info?.match(/([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9_-]+)/);
+    const recipientEmail = emailMatch ? emailMatch[1] : null;
+
+    if (!recipientEmail) {
+      return NextResponse.json({ error: 'Lead does not have a valid email address' }, { status: 400 });
+    }
+
+    // 3. Send email via Resend (or simulate if missing API key)
     const defaultSubject = `Partnership Opportunity: Bulk Oyster Mushroom Supply for ${lead.business_name}`;
     const defaultHtml = `
       <div style="font-family: Arial, sans-serif; color: #333; max-width: 600px; margin: 0 auto;">
@@ -62,7 +70,7 @@ export async function POST(req: Request) {
         },
         body: JSON.stringify({
           from: 'Lomstel Sales <onboarding@resend.dev>', // Resend's default test domain (no verification needed)
-          to: ['naturewinsfarm@gmail.com'], // Sending to the admin for demo purposes
+          to: [recipientEmail], 
           subject: finalSubject,
           html: finalHtml
         })
@@ -71,10 +79,10 @@ export async function POST(req: Request) {
       if (!res.ok) {
         const errorData = await res.text();
         console.error("Resend Error:", errorData);
-        // Continue anyway to mark as contacted for demonstration
+        return NextResponse.json({ error: `Resend API Error: ${errorData}` }, { status: 403 });
       }
     } else {
-      console.log(`[SIMULATED EMAIL] To: ${lead.business_name} | Subject: ${finalSubject}`);
+      console.log(`[SIMULATED EMAIL] To: ${recipientEmail} (${lead.business_name}) | Subject: ${finalSubject}`);
     }
 
     // 3. Update the lead status to 'Contacted'
