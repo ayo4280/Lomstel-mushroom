@@ -26,20 +26,20 @@ const WEB_QUERIES = [
 // --- CURATED BASELINE: Real Nigerian aggregators always included ---
 const CURATED_AGGREGATORS = [
   // B2B Commercial Aggregators
-  { business_name: 'Vendease', business_type: 'B2B Commercial Aggregator', contact_info: 'See website', location: 'Lagos, Nigeria', source_url: 'https://vendease.com', status: 'New' },
-  { business_name: 'TradeDepot', business_type: 'B2B Commercial Aggregator', contact_info: 'See website', location: 'Lagos, Nigeria', source_url: 'https://tradedepot.co', status: 'New' },
-  { business_name: 'Omnibiz Africa', business_type: 'B2B Commercial Aggregator', contact_info: 'See website', location: 'Lagos, Nigeria', source_url: 'https://omnibizafrica.com', status: 'New' },
-  { business_name: 'Alerzo', business_type: 'B2B Commercial Aggregator', contact_info: 'See website', location: 'Ibadan, Nigeria', source_url: 'https://alerzo.com', status: 'New' },
+  { business_name: 'Vendease', business_type: 'B2B Commercial Aggregator', contact_info: 'hello@vendease.com', location: 'Lagos, Nigeria', source_url: 'https://vendease.com', status: 'New' },
+  { business_name: 'TradeDepot', business_type: 'B2B Commercial Aggregator', contact_info: '+234 700 999 0000', location: 'Lagos, Nigeria', source_url: 'https://tradedepot.co', status: 'New' },
+  { business_name: 'Omnibiz Africa', business_type: 'B2B Commercial Aggregator', contact_info: '+234 700 0055 555', location: 'Lagos, Nigeria', source_url: 'https://omnibizafrica.com', status: 'New' },
+  { business_name: 'Alerzo', business_type: 'B2B Commercial Aggregator', contact_info: '+234 800 025 3796', location: 'Ibadan, Nigeria', source_url: 'https://alerzo.com', status: 'New' },
   // On-Demand App Aggregators
-  { business_name: 'Chowdeck', business_type: 'On-Demand App Aggregator', contact_info: 'See website', location: 'Lagos, Nigeria', source_url: 'https://chowdeck.com', status: 'New' },
-  { business_name: 'Glovo Nigeria', business_type: 'On-Demand App Aggregator', contact_info: 'See website', location: 'Lagos, Nigeria', source_url: 'https://glovoapp.com/ng', status: 'New' },
-  { business_name: 'Jumia Food Nigeria', business_type: 'On-Demand App Aggregator', contact_info: 'See website', location: 'Lagos, Nigeria', source_url: 'https://food.jumia.com.ng', status: 'New' },
-  { business_name: 'PocketFood Nigeria', business_type: 'On-Demand App Aggregator', contact_info: 'See website', location: 'Nigeria / Online', source_url: 'https://pocketfood.ng', status: 'New' },
+  { business_name: 'Chowdeck', business_type: 'On-Demand App Aggregator', contact_info: 'hello@chowdeck.com', location: 'Lagos, Nigeria', source_url: 'https://chowdeck.com', status: 'New' },
+  { business_name: 'Glovo Nigeria', business_type: 'On-Demand App Aggregator', contact_info: 'In-App Support', location: 'Lagos, Nigeria', source_url: 'https://glovoapp.com/ng', status: 'New' },
+  { business_name: 'Jumia Food Nigeria', business_type: 'On-Demand App Aggregator', contact_info: '0700 600 0000', location: 'Lagos, Nigeria', source_url: 'https://food.jumia.com.ng', status: 'New' },
+  { business_name: 'PocketFood Nigeria', business_type: 'On-Demand App Aggregator', contact_info: 'hello@pocketfood.io', location: 'Nigeria / Online', source_url: 'https://pocketfood.ng', status: 'New' },
   // Agritech / Farm Aggregators
-  { business_name: 'Farmcrowdy', business_type: 'Agritech / Farm Aggregator', contact_info: 'See website', location: 'Lagos, Nigeria', source_url: 'https://farmcrowdy.com', status: 'New' },
-  { business_name: 'ThriveAgric', business_type: 'Agritech / Farm Aggregator', contact_info: 'See website', location: 'Abuja, Nigeria', source_url: 'https://thriveagric.com', status: 'New' },
-  { business_name: 'Releaf Africa', business_type: 'Agritech / Farm Aggregator', contact_info: 'See website', location: 'Lagos, Nigeria', source_url: 'https://releaf.co.ng', status: 'New' },
-  { business_name: 'Winich Farms', business_type: 'Agritech / Farm Aggregator', contact_info: 'See website', location: 'Nigeria', source_url: 'https://winichfarms.com', status: 'New' },
+  { business_name: 'Farmcrowdy', business_type: 'Agritech / Farm Aggregator', contact_info: '+234 907 579 1999', location: 'Lagos, Nigeria', source_url: 'https://farmcrowdy.com', status: 'New' },
+  { business_name: 'ThriveAgric', business_type: 'Agritech / Farm Aggregator', contact_info: '+234 816 716 4014', location: 'Abuja, Nigeria', source_url: 'https://thriveagric.com', status: 'New' },
+  { business_name: 'Releaf Africa', business_type: 'Agritech / Farm Aggregator', contact_info: 'releaf.earth/contact', location: 'Lagos, Nigeria', source_url: 'https://releaf.co.ng', status: 'New' },
+  { business_name: 'Winich Farms', business_type: 'Agritech / Farm Aggregator', contact_info: '+234 705 555 5955', location: 'Nigeria', source_url: 'https://winichfarms.com', status: 'New' },
 ];
 
 async function fetchGoogleMapsLeads(): Promise<any[]> {
