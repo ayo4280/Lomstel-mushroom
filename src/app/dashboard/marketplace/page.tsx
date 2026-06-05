@@ -24,7 +24,7 @@ const BASE_PRODUCTS = [
     unit: 'per kg',
     badgeColor: '#2d6a4f',
     icon: <img src="/dry-oyster.png" alt="Dry Oyster Mushroom" style={{ width: '80px', height: '80px', objectFit: 'cover', borderRadius: '16px', boxShadow: '0 4px 14px rgba(0,0,0,0.15)', verticalAlign: 'middle' }} />,
-    minOrder: 10,
+    minOrder: 1,
   },
   {
     id: 'wet-fresh',
@@ -36,7 +36,7 @@ const BASE_PRODUCTS = [
     unit: 'per kg',
     badgeColor: '#1a6db5',
     icon: <img src="/wet-oyster.png" alt="Fresh White Oyster Mushroom" style={{ width: '80px', height: '80px', objectFit: 'cover', borderRadius: '16px', boxShadow: '0 4px 14px rgba(0,0,0,0.15)', verticalAlign: 'middle' }} />,
-    minOrder: 10,
+    minOrder: 1,
   },
 ];
 
@@ -81,7 +81,7 @@ export default function MarketplacePage() {
   const [stock, setStock] = useState<Stock>({ wetKg: 0, dryKg: 0 });
   const [stockLoading, setStockLoading] = useState(true);
   const [selectedProduct, setSelectedProduct] = useState<(typeof BASE_PRODUCTS[0] & { availableKg: number; badge: string }) | null>(null);
-  const [quantity, setQuantity] = useState(10);
+  const [quantity, setQuantity] = useState(1);
   const [currency, setCurrency] = useState<'NGN' | 'USD'>('NGN');
   const [isProcessing, setIsProcessing] = useState(false);
   const [orderSuccess, setOrderSuccess] = useState(false);
@@ -121,7 +121,7 @@ export default function MarketplacePage() {
 
   const openOrderModal = (product: typeof PRODUCTS[0]) => {
     setSelectedProduct(product);
-    setQuantity(product.minOrder);
+    setQuantity(1);
     setError('');
     setOrderSuccess(false);
   };
@@ -278,7 +278,7 @@ export default function MarketplacePage() {
             </div>
 
             <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
-              Min. order: <strong>{product.minOrder} kg</strong>
+              Min. order: <strong>1 kg</strong>
             </div>
 
             <button
@@ -351,16 +351,24 @@ export default function MarketplacePage() {
                 {/* Quantity */}
                 <div style={{ marginBottom: '1.5rem' }}>
                   <label style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', display: 'block', marginBottom: '0.5rem' }}>
-                    Quantity (kg) — Min: {selectedProduct.minOrder} kg · Available: <span style={{ color: 'var(--color-forest-600)' }}>{(selectedProduct.availableKg ?? 0).toLocaleString()} kg</span>
+                    Quantity (kg) — Available: <span style={{ color: 'var(--color-forest-600)' }}>{(selectedProduct.availableKg ?? 0).toLocaleString()} kg</span>
                   </label>
                   <input
                     type="number"
-                    min={selectedProduct.minOrder}
+                    min={1}
                     max={selectedProduct.availableKg ?? 999999}
                     value={quantity}
-                    onChange={e => setQuantity(Math.min(selectedProduct.availableKg ?? 999999, Math.max(selectedProduct.minOrder, Number(e.target.value))))}
+                    onChange={e => {
+                      const val = Number(e.target.value);
+                      if (!isNaN(val) && val >= 0) setQuantity(val);
+                    }}
+                    onBlur={e => {
+                      const val = Number(e.target.value);
+                      if (!val || val < 1) setQuantity(1);
+                    }}
                     style={{ width: '100%', padding: '0.875rem 1rem', borderRadius: '10px', border: '2px solid rgba(0,0,0,0.1)', fontSize: '1.1rem', fontWeight: 700, outline: 'none', boxSizing: 'border-box' }}
                   />
+                  <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginTop: '0.4rem' }}>Enter any quantity from 1 kg upward.</p>
                 </div>
 
                 {/* Order Summary */}
