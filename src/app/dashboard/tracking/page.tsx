@@ -1,144 +1,252 @@
 export default function TrackingPage() {
   return (
-    <div className="pt-8 px-4 md:px-8 max-w-5xl mx-auto pb-12">
-      {/* Header Info */}
-      <div className="mb-8 mt-4 flex flex-col md:flex-row md:items-end justify-between gap-4">
+    <div className="pb-8">
+      <style>{`
+        .tracking-header {
+          display: flex;
+          flex-direction: column;
+          gap: 1rem;
+          margin-bottom: 2rem;
+        }
+        @media (min-width: 640px) {
+          .tracking-header {
+            flex-direction: row;
+            align-items: flex-end;
+            justify-content: space-between;
+          }
+        }
+
+        .tracking-grid {
+          display: grid;
+          grid-template-columns: 1fr;
+          gap: 1.25rem;
+        }
+        @media (min-width: 768px) {
+          .tracking-grid { grid-template-columns: repeat(12, 1fr); }
+          .col-8  { grid-column: span 8; }
+          .col-4  { grid-column: span 4; }
+          .col-12 { grid-column: span 12; }
+          .col-6  { grid-column: span 6; }
+        }
+
+        .map-container {
+          border-radius: 16px;
+          overflow: hidden;
+          box-shadow: 0px 12px 32px rgba(11,28,48,0.06);
+          background: var(--color-surface-container-low, #f5f1e9);
+          position: relative;
+          height: 260px;
+        }
+        @media (min-width: 480px) { .map-container { height: 320px; } }
+        @media (min-width: 768px) { .map-container { height: 400px; } }
+
+        .map-overlay {
+          position: absolute;
+          bottom: 1rem; left: 1rem; right: 1rem;
+          padding: 0.875rem 1rem;
+          background: rgba(255,255,255,0.92);
+          backdrop-filter: blur(12px);
+          border-radius: 12px;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          border: 1px solid rgba(255,255,255,0.3);
+          box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+          gap: 0.75rem;
+        }
+
+        .item-summary-card {
+          border-radius: 16px;
+          padding: 1.5rem;
+          display: flex;
+          flex-direction: column;
+          gap: 1.25rem;
+          border: 1px solid rgba(255,255,255,0.1);
+          position: relative;
+          overflow: hidden;
+        }
+        @media (min-width: 600px) {
+          .item-summary-card {
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+            padding: 2rem;
+          }
+        }
+
+        .item-summary-value-block {
+          text-align: left;
+          border-top: 1px solid rgba(255,255,255,0.15);
+          padding-top: 1rem;
+        }
+        @media (min-width: 600px) {
+          .item-summary-value-block {
+            text-align: right;
+            border-top: none;
+            border-left: 1px solid rgba(255,255,255,0.15);
+            padding-top: 0;
+            padding-left: 1.5rem;
+          }
+        }
+
+        .shipping-grid {
+          display: grid;
+          grid-template-columns: 1fr;
+          gap: 1.25rem;
+        }
+        @media (min-width: 640px) {
+          .shipping-grid { grid-template-columns: 1fr 1fr; }
+        }
+
+        .action-row {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 0.75rem;
+          margin-top: 1.25rem;
+        }
+        .action-row button {
+          flex: 1 1 auto;
+          min-width: 130px;
+        }
+
+        .tracking-h1 { font-size: clamp(1.6rem, 5vw, 2.25rem); }
+        .val-text    { font-size: clamp(1.8rem, 6vw, 2.5rem); }
+      `}</style>
+
+      {/* Header */}
+      <div className="tracking-header">
         <div>
-          <span className="text-xs uppercase tracking-widest text-on-surface-variant font-bold">Transaction #PL-8821</span>
-          <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-primary mt-1">Order Tracking</h1>
+          <span style={{ fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.12em', fontWeight: 700, color: 'var(--color-earth-500, #9B8B74)' }}>
+            Transaction #PL-8821
+          </span>
+          <h1 className="tracking-h1" style={{ fontWeight: 800, letterSpacing: '-0.02em', color: 'var(--color-forest-500, #4B7F52)', margin: '0.25rem 0 0' }}>
+            Order Tracking
+          </h1>
         </div>
-        <div className="bg-primary-fixed px-4 py-2 rounded-xl flex items-center gap-2 border border-primary/10">
-          <span className="material-symbols-outlined text-primary">local_shipping</span>
-          <span className="text-on-primary-fixed-variant font-semibold">Estimated: Oct 24, 14:00</span>
+        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', backgroundColor: 'var(--color-forest-100, #E8F0E8)', padding: '0.6rem 1rem', borderRadius: '12px', border: '1px solid rgba(75,127,82,0.12)' }}>
+          <span className="material-symbols-outlined" style={{ color: 'var(--color-forest-500, #4B7F52)', fontSize: '20px' }}>local_shipping</span>
+          <span style={{ fontWeight: 600, fontSize: '0.9rem', color: 'var(--color-earth-700, #5C5243)' }}>Est: Oct 24, 14:00</span>
         </div>
       </div>
 
-      {/* Bento Grid Layout */}
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
-        {/* Map View */}
-        <div className="md:col-span-8 rounded-2xl overflow-hidden shadow-[0px_12px_32px_rgba(11,28,48,0.06)] bg-surface-container-low relative h-[400px]">
-          <div className="absolute inset-0 z-0">
-            <img 
-              className="w-full h-full object-cover grayscale opacity-60" 
+      {/* Main grid */}
+      <div className="tracking-grid">
+
+        {/* Map */}
+        <div className="col-8">
+          <div className="map-container">
+            <img
+              style={{ width: '100%', height: '100%', objectFit: 'cover', filter: 'grayscale(1)', opacity: 0.6, display: 'block' }}
               src="https://lh3.googleusercontent.com/aida-public/AB6AXuDX8_IbScy1x1_cwnW5UZPbYR7ykbGdzgBltX0uUy0UzBPSl_VK-EAIlbZPM0KhU8ujnPGRLhKgl99oFcb4LeCNwgwFWY0FkYKjxc7IHVO5fPjqY7VtbsLrqZTD-sAuY0Zqhi_8SWd58Hxi3vvEocb_ZeVTpMivUyI2RBhJFroksTU1uRtCGhaExvIpQhrkIX7_t1lXALWURqD1g8qguAMz_MuW5uuggzWyW9QaUNfF0BCc4VvB85GZvBMqWSG06U_P-CgexB-1fwn5"
               alt="Map"
             />
-          </div>
-          {/* Delivery Overlay */}
-          <div className="absolute bottom-6 left-6 right-6 p-4 glass-panel rounded-xl flex items-center justify-between border border-white/20 shadow-xl">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center text-white shadow-lg">
-                <span className="material-symbols-outlined">moped</span>
+            <div className="map-overlay">
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                <div style={{ width: '40px', height: '40px', borderRadius: '50%', backgroundColor: 'var(--color-forest-500, #4B7F52)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                  <span className="material-symbols-outlined" style={{ color: 'white', fontSize: '20px' }}>moped</span>
+                </div>
+                <div>
+                  <p style={{ margin: 0, fontSize: '0.65rem', fontWeight: 700, color: 'var(--color-earth-500)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Current Location</p>
+                  <p style={{ margin: 0, fontWeight: 700, color: 'var(--color-earth-900)', fontSize: '0.9rem' }}>Oshodi Interchange Hub</p>
+                </div>
               </div>
-              <div>
-                <p className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Current Location</p>
-                <p className="font-bold text-on-surface leading-tight">Oshodi Interchange Hub</p>
+              <div style={{ textAlign: 'right', flexShrink: 0 }}>
+                <p style={{ margin: 0, fontSize: '0.65rem', fontWeight: 700, color: 'var(--color-earth-500)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Next Stop</p>
+                <p style={{ margin: 0, fontWeight: 700, color: 'var(--color-forest-500)', fontSize: '0.9rem' }}>VI Distribution</p>
               </div>
-            </div>
-            <div className="text-right hidden sm:block">
-              <p className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Next Stop</p>
-              <p className="font-bold text-primary leading-tight">VI Distribution Center</p>
             </div>
           </div>
         </div>
 
         {/* Status Timeline */}
-        <div className="md:col-span-4 bg-surface-container-lowest rounded-2xl p-6 shadow-sm border border-outline-variant/10">
-          <h3 className="text-xl font-bold mb-6 tracking-tight">Delivery Status</h3>
-          <div className="space-y-8 relative">
-            <div className="absolute left-[11px] top-2 bottom-2 w-[2px] bg-surface-container-high"></div>
-            
-            <div className="relative flex items-start gap-4 pl-8">
-              <div className="absolute left-0 w-6 h-6 rounded-full bg-primary flex items-center justify-center z-10 shadow-sm">
-                <span className="material-symbols-outlined text-[14px] text-white font-bold fill-current">check</span>
-              </div>
-              <div>
-                <p className="font-bold text-on-surface leading-none">Order Placed</p>
-                <p className="text-xs text-on-surface-variant mt-1 font-medium">Oct 21, 09:30 AM</p>
-              </div>
-            </div>
+        <div className="col-4" style={{ backgroundColor: 'white', borderRadius: '16px', padding: '1.5rem', border: '1px solid var(--color-earth-200, #EFEBE0)' }}>
+          <h3 style={{ fontSize: '1.1rem', fontWeight: 800, marginBottom: '1.5rem', marginTop: 0 }}>Delivery Status</h3>
+          <div style={{ position: 'relative', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+            <div style={{ position: 'absolute', left: '11px', top: '4px', bottom: '4px', width: '2px', backgroundColor: 'var(--color-earth-200)' }} />
 
-            <div className="relative flex items-start gap-4 pl-8">
-              <div className="absolute left-0 w-6 h-6 rounded-full bg-primary flex items-center justify-center z-10 shadow-sm">
-                <span className="material-symbols-outlined text-[14px] text-white font-bold fill-current">check</span>
+            {[
+              { label: 'Order Placed', time: 'Oct 21, 09:30 AM', done: true },
+              { label: 'Processing', time: 'Oct 21, 14:15 PM', done: true },
+              { label: 'In Transit', time: 'Oct 22, 08:00 AM', done: false, active: true, note: 'Package being sorted at Lagos Mainland hub.' },
+              { label: 'Delivered', time: 'Expected Tomorrow', done: false, muted: true },
+            ].map((step, i) => (
+              <div key={i} style={{ position: 'relative', display: 'flex', alignItems: 'flex-start', gap: '0.75rem', paddingLeft: '2rem', opacity: step.muted ? 0.4 : 1 }}>
+                <div style={{
+                  position: 'absolute', left: 0, width: '24px', height: '24px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1,
+                  backgroundColor: step.done ? 'var(--color-forest-500)' : step.active ? 'white' : 'var(--color-earth-200)',
+                  border: step.active ? '2px solid var(--color-forest-500)' : 'none',
+                }}>
+                  {step.done && <span className="material-symbols-outlined" style={{ fontSize: '14px', color: 'white', fontVariationSettings: '"FILL" 1' }}>check</span>}
+                  {step.active && <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: 'var(--color-forest-500)', animation: 'pulse 1.5s infinite' }} />}
+                </div>
+                <div>
+                  <p style={{ margin: 0, fontWeight: 700, fontSize: '0.9rem', color: step.active ? 'var(--color-forest-500)' : 'var(--color-earth-900)' }}>{step.label}</p>
+                  <p style={{ margin: '2px 0 0', fontSize: '0.75rem', color: 'var(--color-earth-500)', fontWeight: 600 }}>{step.time}</p>
+                  {step.note && (
+                    <div style={{ marginTop: '0.5rem', backgroundColor: 'var(--color-forest-100)', padding: '0.5rem 0.75rem', borderRadius: '8px', fontSize: '0.75rem', color: 'var(--color-earth-700)', fontWeight: 500 }}>
+                      {step.note}
+                    </div>
+                  )}
+                </div>
               </div>
-              <div>
-                <p className="font-bold text-on-surface leading-none">Processing</p>
-                <p className="text-xs text-on-surface-variant mt-1 font-medium">Oct 21, 14:15 PM</p>
-              </div>
-            </div>
+            ))}
+          </div>
+        </div>
 
-            <div className="relative flex items-start gap-4 pl-8">
-              <div className="absolute left-0 w-6 h-6 rounded-full bg-white border-2 border-primary flex items-center justify-center z-10 shadow-sm">
-                <div className="w-2 h-2 rounded-full bg-primary animate-pulse"></div>
+        {/* Item Summary */}
+        <div className="col-12">
+          <div className="item-summary-card" style={{ backgroundColor: 'var(--color-forest-700, #2D4C31)' }}>
+            <div style={{ position: 'absolute', right: 0, top: 0, width: '160px', height: '100%', backgroundColor: 'rgba(255,255,255,0.04)', transform: 'skewX(12deg) translateX(40px)' }} />
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', position: 'relative', zIndex: 1 }}>
+              <div style={{ width: '72px', height: '72px', borderRadius: '12px', overflow: 'hidden', backgroundColor: 'rgba(255,255,255,0.1)', flexShrink: 0, border: '1px solid rgba(255,255,255,0.2)' }}>
+                <img style={{ width: '100%', height: '100%', objectFit: 'cover' }} src="https://lh3.googleusercontent.com/aida-public/AB6AXuCoa_N_2p-eE0k9_3C-u_Oa5T6fU7x5o3jN6x8T1e_vPq7y2L4M-1N4z0r5-wT6m_S3u_V5b_C8n_P9q_R7i_L1c_hC_PqP4z-I55If9CRfY8dwNx9B07c9PVtBwl7Odorcg80dZb_jVK5I4McOpIVa9hPJDQ4C-zep5WHtVoX8QlsCdSn8mts25mLXocviqmwxiR0o6Qxj-TP0MhlAupzgDp2U6uuIR8NaT1mxJSfxnnf_RDPgkUjrL1ZXtBzju4d-r5-mW7jE1Xt3k0" alt="Product" />
               </div>
               <div>
-                <p className="font-bold text-primary leading-none">In Transit</p>
-                <p className="text-xs text-on-surface-variant mt-1 font-medium">Oct 22, 08:00 AM</p>
-                <div className="mt-3 bg-primary-fixed/20 p-3 rounded-lg border border-primary/10">
-                  <p className="text-[11px] text-on-primary-fixed-variant font-medium leading-relaxed">Package is being sorted at the Lagos Mainland logistics hub.</p>
+                <h2 style={{ margin: 0, color: 'white', fontWeight: 800, fontSize: 'clamp(1rem, 3.5vw, 1.5rem)', letterSpacing: '-0.02em' }}>Fresh Oyster Mushrooms</h2>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem', marginTop: '0.5rem' }}>
+                  {['Quantity: 500kg', 'Grade: Premium', 'Origin: Jos Plateau'].map(tag => (
+                    <span key={tag} style={{ backgroundColor: 'rgba(255,255,255,0.12)', padding: '3px 10px', borderRadius: '20px', fontSize: '0.7rem', fontWeight: 700, color: 'rgba(255,255,255,0.9)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>{tag}</span>
+                  ))}
                 </div>
               </div>
             </div>
+            <div className="item-summary-value-block" style={{ position: 'relative', zIndex: 1 }}>
+              <p style={{ margin: 0, fontSize: '0.65rem', fontWeight: 700, color: 'rgba(255,255,255,0.5)', textTransform: 'uppercase', letterSpacing: '0.12em' }}>Total Market Value</p>
+              <p className="val-text" style={{ margin: '4px 0 0', fontWeight: 900, color: 'white', letterSpacing: '-0.02em' }}>₦1,920,000</p>
+            </div>
+          </div>
+        </div>
 
-            <div className="relative flex items-start gap-4 pl-8 opacity-40">
-              <div className="absolute left-0 w-6 h-6 rounded-full bg-surface-container-high z-10"></div>
+        {/* Shipping + Support */}
+        <div className="col-12">
+          <div className="shipping-grid">
+            <div style={{ backgroundColor: 'var(--color-earth-100, #FAF8F5)', borderRadius: '16px', padding: '1.5rem', border: '1px solid var(--color-earth-200)' }}>
+              <h4 style={{ margin: '0 0 0.75rem', fontSize: '0.7rem', fontWeight: 800, color: 'var(--color-earth-500)', textTransform: 'uppercase', letterSpacing: '0.12em' }}>Shipping Destination</h4>
+              <p style={{ margin: 0, fontWeight: 700, fontSize: 'clamp(0.95rem, 2.5vw, 1.1rem)', lineHeight: 1.6, color: 'var(--color-earth-900)' }}>
+                Nexus Culinary Center<br />15 Adeola Odeku Street<br />Victoria Island, Lagos 101241
+              </p>
+              <div className="action-row">
+                <button style={{ backgroundColor: 'var(--color-earth-200)', padding: '0.6rem 1.2rem', borderRadius: '10px', border: 'none', fontWeight: 700, fontSize: '0.875rem', cursor: 'pointer', transition: 'all 0.2s' }}>
+                  Change Address
+                </button>
+              </div>
+            </div>
+
+            <div style={{ backgroundColor: '#FBECE8', borderRadius: '16px', padding: '1.5rem', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', gap: '1rem', border: '1px solid rgba(200,90,60,0.1)' }}>
               <div>
-                <p className="font-bold text-on-surface leading-none">Delivered</p>
-                <p className="text-xs text-on-surface-variant mt-1">Expected Tomorrow</p>
+                <h4 style={{ margin: '0 0 0.5rem', fontSize: '0.7rem', fontWeight: 800, color: 'var(--color-accent, #C85A3C)', textTransform: 'uppercase', letterSpacing: '0.12em' }}>Logistics Support</h4>
+                <p style={{ margin: 0, fontWeight: 600, lineHeight: 1.6, color: 'var(--color-earth-700)', fontSize: '0.9rem' }}>
+                  Chat with Tunde, our local logistics manager, for real-time updates.
+                </p>
               </div>
+              <button style={{ backgroundColor: 'var(--color-accent, #C85A3C)', color: 'white', padding: '0.875rem 1.25rem', borderRadius: '12px', border: 'none', fontWeight: 800, fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '0.05em', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem', transition: 'all 0.2s', alignSelf: 'flex-start' }}>
+                <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>support_agent</span>
+                Contact Support (WhatsApp)
+              </button>
             </div>
           </div>
         </div>
 
-        {/* Item Summary Card */}
-        <div className="md:col-span-12 bg-primary-container text-white rounded-2xl p-8 flex flex-col md:flex-row items-center justify-between gap-8 border border-white/10 relative overflow-hidden">
-          <div className="absolute right-0 top-0 w-64 h-full bg-white/5 skew-x-12 -translate-y-12"></div>
-          <div className="flex items-center gap-6 relative z-10">
-            <div className="w-24 h-24 rounded-xl overflow-hidden bg-white/10 shrink-0 border border-white/20 shadow-xl">
-              <img 
-                className="w-full h-full object-cover" 
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuCoa_N_2p-eE0k9_3C-u_Oa5T6fU7x5o3jN6x8T1e_vPq7y2L4M-1N4z0r5-wT6m_S3u_V5b_C8n_P9q_R7i_L1c_hC_PqP4z-I55If9CRfY8dwNx9B07c9PVtBwl7Odorcg80dZb_jVK5I4McOpIVa9hPJDQ4C-zep5WHtVoX8QlsCdSn8mts25mLXocviqmwxiR0o6Qxj-TP0MhlAupzgDp2U6uuIR8NaT1mxJSfxnnf_RDPgkUjrL1ZXtBzju4d-r5-mW7jE1Xt3k0"
-                alt="Product"
-              />
-            </div>
-            <div>
-              <h2 className="text-2xl font-bold tracking-tight">Fresh Oyster Mushrooms</h2>
-              <div className="flex flex-wrap gap-2 mt-2">
-                <span className="bg-white/10 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">Quantity: 500kg</span>
-                <span className="bg-white/10 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">Grade: Premium</span>
-                <span className="bg-white/10 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">Origin: Jos Plateau Farm</span>
-              </div>
-            </div>
-          </div>
-          <div className="text-center md:text-right border-t md:border-t-0 md:border-l border-white/10 pt-6 md:pt-0 md:pl-12 relative z-10">
-            <p className="text-primary-fixed/60 font-bold uppercase tracking-widest text-[10px]">Total Market Value</p>
-            <p className="text-4xl font-extrabold mt-1 text-primary-fixed tracking-tighter">₦1,920,000</p>
-          </div>
-        </div>
-
-        {/* Shipping Details */}
-        <div className="md:col-span-6 bg-surface-container-low rounded-2xl p-8 border border-outline-variant/10">
-          <h4 className="text-[10px] font-black text-on-surface-variant uppercase tracking-widest mb-4">Shipping Destination</h4>
-          <p className="font-bold text-xl leading-tight text-on-surface">Nexus Culinary Center<br/>15 Adeola Odeku Street<br/>Victoria Island, Lagos 101241</p>
-          <div className="mt-8 flex gap-4">
-            <button className="bg-surface-container-highest px-5 py-2.5 rounded-xl text-on-surface font-bold text-sm hover:bg-surface-dim transition-all active:scale-95">
-              Change Address
-            </button>
-          </div>
-        </div>
-
-        {/* Support Card */}
-        <div className="md:col-span-6 bg-tertiary-container rounded-2xl p-8 flex flex-col justify-between items-start border border-tertiary/10 shadow-lg shadow-tertiary/5">
-          <div>
-            <h4 className="text-[10px] font-black text-on-tertiary-container uppercase tracking-widest mb-2">Logistics Support</h4>
-            <p className="text-on-tertiary font-bold leading-relaxed">Chat with Tunde, our local logistics manager, for real-time delivery updates.</p>
-          </div>
-          <button className="mt-8 bg-tertiary text-on-tertiary px-6 py-4 rounded-xl font-black text-sm uppercase tracking-tighter flex items-center gap-2 hover:opacity-90 transition-all active:scale-95 shadow-xl shadow-tertiary/20">
-            <span className="material-symbols-outlined">support_agent</span>
-            Contact Support (WhatsApp)
-          </button>
-        </div>
       </div>
     </div>
   );
