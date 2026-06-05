@@ -86,6 +86,7 @@ export default function MarketplacePage() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [orderSuccess, setOrderSuccess] = useState(false);
   const [error, setError] = useState('');
+  const [notes, setNotes] = useState('');
 
   // Derive live products from base + stock
   const PRODUCTS = BASE_PRODUCTS.map(p => ({
@@ -129,6 +130,7 @@ export default function MarketplacePage() {
     setSelectedProduct(null);
     setIsProcessing(false);
     setError('');
+    setNotes('');
   };
 
   const pricePerKg = selectedProduct
@@ -197,6 +199,36 @@ export default function MarketplacePage() {
       window.location.href = payment_link;
     } catch (err: any) {
       setError(err.message || 'Payment failed. Please try again.');
+      setIsProcessing(false);
+    }
+  };
+
+  const handleRequestQuote = async () => {
+    if (!user || !selectedProduct) return;
+    setIsProcessing(true);
+    setError('');
+
+    try {
+      const res = await fetch('/api/payments/request-quote', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          product_name: selectedProduct.name,
+          quantity_kg: quantity,
+          price_per_kg: pricePerKg,
+          total_amount: totalAmount,
+          currency: currency,
+          notes: notes,
+        }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to request quote');
+
+      setOrderSuccess(true);
+    } catch (err: any) {
+      setError(err.message || 'Failed to submit quote request. Please try again.');
+    } finally {
       setIsProcessing(false);
     }
   };
@@ -282,77 +314,132 @@ export default function MarketplacePage() {
             </h2>
             <p style={{ color: 'var(--text-muted)', marginBottom: '2rem' }}>Configure your order below.</p>
 
-            {/* Currency Selector */}
-            <div style={{ marginBottom: '1.5rem' }}>
-              <label style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', display: 'block', marginBottom: '0.5rem' }}>Payment Currency</label>
-              <div style={{ display: 'flex', gap: '0.75rem' }}>
-                <button onClick={() => setCurrency('NGN')}
-                  style={{ flex: 1, padding: '0.75rem', borderRadius: '10px', border: `2px solid ${currency === 'NGN' ? 'var(--color-forest-500)' : 'transparent'}`, backgroundColor: currency === 'NGN' ? 'var(--color-forest-50, #f0fdf4)' : 'rgba(0,0,0,0.04)', cursor: 'pointer', fontWeight: 700, color: currency === 'NGN' ? 'var(--color-forest-700)' : 'var(--text-muted)' }}>
-                  🇳🇬 NGN (Local)
+            {orderSuccess ? (
+              <div style={{ textAlign: 'center', padding: '2rem 0' }} className="animate-fade-in">
+                <div style={{ width: '64px', height: '64px', backgroundColor: 'var(--color-forest-100)', color: 'var(--color-forest-600)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.5rem auto' }}>
+                  <Package size={32} />
+                </div>
+                <h3 style={{ fontSize: '1.5rem', color: 'var(--color-earth-900)', marginBottom: '0.5rem' }}>Quote Requested!</h3>
+                <p style={{ color: 'var(--text-muted)', marginBottom: '2rem', lineHeight: 1.6 }}>
+                  Your bulk order request has been sent to our sales team. We will review your request and contact you within 24 hours to arrange SWIFT/Escrow payment and shipping logistics.
+                </p>
+                <button onClick={closeModal}
+                  style={{ backgroundColor: 'var(--color-forest-600)', color: 'white', border: 'none', borderRadius: '12px', padding: '0.75rem 2rem', fontSize: '1rem', fontWeight: 700, cursor: 'pointer', transition: 'filter 0.2s' }}
+                  onMouseEnter={e => e.currentTarget.style.filter = 'brightness(1.1)'}
+                  onMouseLeave={e => e.currentTarget.style.filter = 'brightness(1)'}
+                >
+                  Close
                 </button>
-                <button onClick={() => setCurrency('USD')}
-                  style={{ flex: 1, padding: '0.75rem', borderRadius: '10px', border: `2px solid ${currency === 'USD' ? '#4361ee' : 'transparent'}`, backgroundColor: currency === 'USD' ? '#f0f4ff' : 'rgba(0,0,0,0.04)', cursor: 'pointer', fontWeight: 700, color: currency === 'USD' ? '#3a0ca3' : 'var(--text-muted)' }}>
-                  🌍 USD (International)
-                </button>
               </div>
-            </div>
-
-            {/* Quantity */}
-            <div style={{ marginBottom: '1.5rem' }}>
-              <label style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', display: 'block', marginBottom: '0.5rem' }}>
-                Quantity (kg) — Min: {selectedProduct.minOrder} kg · Available: <span style={{ color: 'var(--color-forest-600)' }}>{(selectedProduct.availableKg ?? 0).toLocaleString()} kg</span>
-              </label>
-              <input
-                type="number"
-                min={selectedProduct.minOrder}
-                max={selectedProduct.availableKg ?? 999999}
-                value={quantity}
-                onChange={e => setQuantity(Math.min(selectedProduct.availableKg ?? 999999, Math.max(selectedProduct.minOrder, Number(e.target.value))))}
-                style={{ width: '100%', padding: '0.875rem 1rem', borderRadius: '10px', border: '2px solid rgba(0,0,0,0.1)', fontSize: '1.1rem', fontWeight: 700, outline: 'none', boxSizing: 'border-box' }}
-              />
-            </div>
-
-            {/* Order Summary */}
-            <div style={{ backgroundColor: 'rgba(0,0,0,0.04)', borderRadius: '12px', padding: '1.25rem', marginBottom: '1.5rem' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem', fontSize: '0.95rem' }}>
-                <span style={{ color: 'var(--text-muted)' }}>Price per kg</span>
-                <span style={{ fontWeight: 600 }}>{currency === 'NGN' ? `₦${pricePerKg.toLocaleString()}` : `$${pricePerKg}`}</span>
-              </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem', fontSize: '0.95rem' }}>
-                <span style={{ color: 'var(--text-muted)' }}>Quantity</span>
-                <span style={{ fontWeight: 600 }}>{quantity} kg</span>
-              </div>
-              <div style={{ height: '1px', backgroundColor: 'rgba(0,0,0,0.08)', margin: '0.75rem 0' }} />
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '1.3rem', fontWeight: 800 }}>
-                <span>Total</span>
-                <span style={{ color: 'var(--color-forest-700)' }}>{formattedTotal}</span>
-              </div>
-            </div>
-
-            {error && (
-              <div style={{ backgroundColor: '#fee2e2', color: '#b91c1c', padding: '0.75rem 1rem', borderRadius: '10px', fontSize: '0.9rem', marginBottom: '1rem' }}>
-                {error}
-              </div>
-            )}
-
-            {/* Payment Buttons */}
-            {currency === 'NGN' ? (
-              <button onClick={handlePayWithPaystack} disabled={isProcessing}
-                style={{ width: '100%', padding: '1rem', borderRadius: '12px', border: 'none', backgroundColor: '#0BA4DB', color: 'white', fontSize: '1rem', fontWeight: 700, cursor: isProcessing ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', opacity: isProcessing ? 0.7 : 1 }}>
-                {isProcessing ? <Loader2 size={20} className="animate-spin" /> : <CreditCard size={20} />}
-                {isProcessing ? 'Processing...' : `Pay ${formattedTotal} with Paystack`}
-              </button>
             ) : (
-              <button onClick={handlePayWithFlutterwave} disabled={isProcessing}
-                style={{ width: '100%', padding: '1rem', borderRadius: '12px', border: 'none', backgroundColor: '#F5A623', color: 'white', fontSize: '1rem', fontWeight: 700, cursor: isProcessing ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', opacity: isProcessing ? 0.7 : 1 }}>
-                {isProcessing ? <Loader2 size={20} className="animate-spin" /> : <Globe size={20} />}
-                {isProcessing ? 'Processing...' : `Pay ${formattedTotal} with Flutterwave`}
-              </button>
-            )}
+              <>
+                {/* Currency Selector */}
+                <div style={{ marginBottom: '1.5rem' }}>
+                  <label style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', display: 'block', marginBottom: '0.5rem' }}>Payment Currency</label>
+                  <div style={{ display: 'flex', gap: '0.75rem' }}>
+                    <button onClick={() => setCurrency('NGN')}
+                      style={{ flex: 1, padding: '0.75rem', borderRadius: '10px', border: `2px solid ${currency === 'NGN' ? 'var(--color-forest-500)' : 'transparent'}`, backgroundColor: currency === 'NGN' ? 'var(--color-forest-50, #f0fdf4)' : 'rgba(0,0,0,0.04)', cursor: 'pointer', fontWeight: 700, color: currency === 'NGN' ? 'var(--color-forest-700)' : 'var(--text-muted)' }}>
+                      🇳🇬 NGN (Local)
+                    </button>
+                    <button onClick={() => setCurrency('USD')}
+                      style={{ flex: 1, padding: '0.75rem', borderRadius: '10px', border: `2px solid ${currency === 'USD' ? '#4361ee' : 'transparent'}`, backgroundColor: currency === 'USD' ? '#f0f4ff' : 'rgba(0,0,0,0.04)', cursor: 'pointer', fontWeight: 700, color: currency === 'USD' ? '#3a0ca3' : 'var(--text-muted)' }}>
+                      🌍 USD (International)
+                    </button>
+                  </div>
+                </div>
 
-            <p style={{ textAlign: 'center', fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '1rem' }}>
-              🔒 Secured by {currency === 'NGN' ? 'Paystack' : 'Flutterwave'} · Your payment is encrypted
-            </p>
+                {/* Quantity */}
+                <div style={{ marginBottom: '1.5rem' }}>
+                  <label style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', display: 'block', marginBottom: '0.5rem' }}>
+                    Quantity (kg) — Min: {selectedProduct.minOrder} kg · Available: <span style={{ color: 'var(--color-forest-600)' }}>{(selectedProduct.availableKg ?? 0).toLocaleString()} kg</span>
+                  </label>
+                  <input
+                    type="number"
+                    min={selectedProduct.minOrder}
+                    max={selectedProduct.availableKg ?? 999999}
+                    value={quantity}
+                    onChange={e => setQuantity(Math.min(selectedProduct.availableKg ?? 999999, Math.max(selectedProduct.minOrder, Number(e.target.value))))}
+                    style={{ width: '100%', padding: '0.875rem 1rem', borderRadius: '10px', border: '2px solid rgba(0,0,0,0.1)', fontSize: '1.1rem', fontWeight: 700, outline: 'none', boxSizing: 'border-box' }}
+                  />
+                </div>
+
+                {/* Order Summary */}
+                <div style={{ backgroundColor: 'rgba(0,0,0,0.04)', borderRadius: '12px', padding: '1.25rem', marginBottom: '1.5rem' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem', fontSize: '0.95rem' }}>
+                    <span style={{ color: 'var(--text-muted)' }}>Price per kg</span>
+                    <span style={{ fontWeight: 600 }}>{currency === 'NGN' ? `₦${pricePerKg.toLocaleString()}` : `$${pricePerKg}`}</span>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem', fontSize: '0.95rem' }}>
+                    <span style={{ color: 'var(--text-muted)' }}>Quantity</span>
+                    <span style={{ fontWeight: 600 }}>{quantity} kg</span>
+                  </div>
+                  <div style={{ height: '1px', backgroundColor: 'rgba(0,0,0,0.08)', margin: '0.75rem 0' }} />
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '1.3rem', fontWeight: 800 }}>
+                    <span>Total</span>
+                    <span style={{ color: 'var(--color-forest-700)' }}>{formattedTotal}</span>
+                  </div>
+                </div>
+
+                {error && (
+                  <div style={{ backgroundColor: '#fee2e2', color: '#b91c1c', padding: '0.75rem 1rem', borderRadius: '10px', fontSize: '0.9rem', marginBottom: '1rem' }}>
+                    {error}
+                  </div>
+                )}
+
+                {/* Payment Buttons */}
+                {currency === 'NGN' ? (
+                  <button onClick={handlePayWithPaystack} disabled={isProcessing}
+                    style={{ width: '100%', padding: '1rem', borderRadius: '12px', border: 'none', backgroundColor: '#0BA4DB', color: 'white', fontSize: '1rem', fontWeight: 700, cursor: isProcessing ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', opacity: isProcessing ? 0.7 : 1 }}>
+                    {isProcessing ? <Loader2 size={20} className="animate-spin" /> : <CreditCard size={20} />}
+                    {isProcessing ? 'Processing...' : `Pay ${formattedTotal} with Paystack`}
+                  </button>
+                ) : (
+                  <button onClick={handlePayWithFlutterwave} disabled={isProcessing}
+                    style={{ width: '100%', padding: '1rem', borderRadius: '12px', border: 'none', backgroundColor: '#F5A623', color: 'white', fontSize: '1rem', fontWeight: 700, cursor: isProcessing ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', opacity: isProcessing ? 0.7 : 1 }}>
+                    {isProcessing ? <Loader2 size={20} className="animate-spin" /> : <Globe size={20} />}
+                    {isProcessing ? 'Processing...' : `Pay ${formattedTotal} with Flutterwave`}
+                  </button>
+                )}
+
+                {quantity >= 100 && (
+                  <div style={{ marginTop: '1rem' }} className="animate-fade-in">
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', margin: '1rem 0' }}>
+                      <div style={{ flex: 1, height: '1px', backgroundColor: 'rgba(0,0,0,0.1)' }} />
+                      <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 700, textTransform: 'uppercase' }}>OR</span>
+                      <div style={{ flex: 1, height: '1px', backgroundColor: 'rgba(0,0,0,0.1)' }} />
+                    </div>
+                    
+                    <textarea
+                      placeholder="Any special instructions or shipping notes?"
+                      value={notes}
+                      onChange={(e) => setNotes(e.target.value)}
+                      style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid rgba(0,0,0,0.1)', marginBottom: '0.75rem', fontSize: '0.9rem', resize: 'vertical', minHeight: '60px', fontFamily: 'inherit' }}
+                    />
+
+                    <button onClick={handleRequestQuote} disabled={isProcessing}
+                      style={{ width: '100%', padding: '1rem', borderRadius: '12px', border: '2px solid var(--color-earth-800)', backgroundColor: 'transparent', color: 'var(--color-earth-900)', fontSize: '1rem', fontWeight: 700, cursor: isProcessing ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', opacity: isProcessing ? 0.7 : 1, transition: 'all 0.2s' }}
+                      onMouseEnter={e => {
+                        if(!isProcessing) {
+                          e.currentTarget.style.backgroundColor = 'var(--color-earth-800)';
+                          e.currentTarget.style.color = 'white';
+                        }
+                      }}
+                      onMouseLeave={e => {
+                        e.currentTarget.style.backgroundColor = 'transparent';
+                        e.currentTarget.style.color = 'var(--color-earth-900)';
+                      }}
+                    >
+                      {isProcessing ? <Loader2 size={20} className="animate-spin" /> : <Package size={20} />}
+                      Request Bulk Quote (SWIFT / Escrow)
+                    </button>
+                  </div>
+                )}
+
+                <p style={{ textAlign: 'center', fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '1rem' }}>
+                  🔒 Secured by {currency === 'NGN' ? 'Paystack' : 'Flutterwave'} · Your payment is encrypted
+                </p>
+              </>
+            )}
           </div>
         </div>
       )}

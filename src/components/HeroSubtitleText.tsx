@@ -18,21 +18,22 @@ export function HeroSubtitleText() {
         <Plus className="absolute -bottom-4 -right-4 h-6 w-6 text-yellow-400 opacity-80" />
 
         {/* Animated phrase row */}
-        <h2 className="flex flex-col sm:flex-row justify-center items-center gap-4 text-center">
+        <h2 style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center', gap: '0.75rem 1.5rem', textAlign: 'center', margin: 0 }}>
           {phrases.map((text, i) => (
             <span
               key={text}
               style={{
                 display: "inline-block",
-                fontSize: "clamp(1.5rem, 4vw, 2.8rem)",
+                fontSize: "clamp(1.1rem, 4vw, 2.4rem)",
                 fontWeight: 900,
                 letterSpacing: "-0.02em",
-                color: "#FFFFFF", /* Glowing White */
+                color: "#FFFFFF",
                 textShadow: "0 0 15px rgba(255, 255, 255, 0.8), 0 4px 20px rgba(0,0,0,0.8)",
                 animationName: `pulse-${i + 1}`,
                 animationDuration: "9s",
                 animationTimingFunction: "ease-in-out",
                 animationIterationCount: "infinite",
+                whiteSpace: "nowrap",
               }}
             >
               {text}
