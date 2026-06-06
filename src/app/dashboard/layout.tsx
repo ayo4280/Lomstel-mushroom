@@ -23,7 +23,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         const { data: { session } } = await supabase.auth.getSession();
         if (!session) { router.push('/login'); return; }
         const { data: userProfile, error } = await supabase
-          .from('profiles').select('*').eq('id', session.user.id).single();
+          .from('profiles').select('*').eq('id', session.user.id).maybeSingle();
         if (error || !userProfile) {
           setProfile({ full_name: session.user.user_metadata?.full_name || 'Lomstel Member', role: session.user.user_metadata?.role || 'BUYER' });
         } else {

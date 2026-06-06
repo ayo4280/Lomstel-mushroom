@@ -75,9 +75,20 @@ export default function AIAgentDashboard() {
         router.push('/login');
         return;
       }
-      
-      const { data: profile } = await supabase.from('profiles').select('role').eq('id', session.user.id).single();
-      if (profile?.role !== 'ADMIN') {
+
+      // Primary: read role from auth user_metadata (always populated on signup/setup)
+      const metaRole = session.user.user_metadata?.role as string | undefined;
+
+      // Secondary: also check profiles table (may be empty for older accounts)
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', session.user.id)
+        .maybeSingle(); // use maybeSingle so no error when row is missing
+
+      const effectiveRole = profile?.role ?? metaRole;
+
+      if (effectiveRole !== 'ADMIN') {
         router.push('/dashboard');
         return;
       }
