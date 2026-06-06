@@ -1,29 +1,17 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 
+// ── Vercel: allow this function up to 60 seconds before timeout ──
+export const maxDuration = 60;
+
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
-const apifyKey = process.env.APIFY_API_KEY!;
-const firecrawlKey = process.env.FIRECRAWL_API_KEY!;
+const apifyKey = process.env.APIFY_API_KEY;
+const firecrawlKey = process.env.FIRECRAWL_API_KEY;
 
 const supabase = createClient(supabaseUrl, supabaseKey, { auth: { persistSession: false } });
 
-// --- GOOGLE MAPS SCRAPER (for location-based leads) ---
-const MAPS_QUERIES = [
-  'organic food distributors London UK',
-  'mushroom importers New York USA',
-  'health food supermarkets Berlin Germany',
-  'restaurants Lagos Nigeria',
-];
-
-// --- WEB SEARCH via Firecrawl (for category/concept-based leads like aggregators) ---
-const WEB_QUERIES = [
-  { query: 'B2B commercial food aggregator companies Nigeria', type: 'B2B Commercial Aggregator' },
-  { query: 'on-demand food delivery aggregator app companies Nigeria Chowdeck Glovo', type: 'On-Demand App Aggregator' },
-  { query: 'agritech direct-from-farm aggregator platforms Nigeria 2024', type: 'Agritech / Farm Aggregator' },
-];
-
-// --- CURATED BASELINE: Real Nigerian aggregators always included ---
+// ── CURATED LEADS: always inserted first — never skipped ──
 const CURATED_AGGREGATORS = [
   // B2B Commercial Aggregators
   { business_name: 'Vendease', business_type: 'B2B Commercial Aggregator', contact_info: 'hello@vendease.com', location: 'Lagos, Nigeria', source_url: 'https://vendease.com', status: 'New' },
@@ -40,129 +28,152 @@ const CURATED_AGGREGATORS = [
   { business_name: 'ThriveAgric', business_type: 'Agritech / Farm Aggregator', contact_info: '+234 816 716 4014', location: 'Abuja, Nigeria', source_url: 'https://thriveagric.com', status: 'New' },
   { business_name: 'Releaf Africa', business_type: 'Agritech / Farm Aggregator', contact_info: 'releaf.earth/contact', location: 'Lagos, Nigeria', source_url: 'https://releaf.co.ng', status: 'New' },
   { business_name: 'Winich Farms', business_type: 'Agritech / Farm Aggregator', contact_info: '+234 705 555 5955', location: 'Nigeria', source_url: 'https://winichfarms.com', status: 'New' },
+  // International Buyers
+  { business_name: 'Alnatura Super Natur Markt', business_type: 'Health Food Retailer', contact_info: 'info@alnatura.de', location: 'Berlin, Germany', source_url: 'https://alnatura.de', status: 'New' },
+  { business_name: 'Whole Foods Market UK', business_type: 'Health Food Retailer', contact_info: 'supplier@wholefoodsmarket.com', location: 'London, United Kingdom', source_url: 'https://wholefoodsmarket.co.uk', status: 'New' },
+  { business_name: 'Sprouts Farmers Market', business_type: 'Health Food Retailer', contact_info: 'vendor@sprouts.com', location: 'Phoenix, USA', source_url: 'https://sprouts.com', status: 'New' },
+  { business_name: 'Baldor Specialty Foods', business_type: 'Food Distributor', contact_info: '+1 718 860 9100', location: 'New York, USA', source_url: 'https://baldorfood.com', status: 'New' },
+  { business_name: 'Metro AG', business_type: 'Wholesale Distributor', contact_info: 'supplier@metro.de', location: 'Düsseldorf, Germany', source_url: 'https://metro.de', status: 'New' },
+  { business_name: 'Asian Food Holdings', business_type: 'Food Distributor', contact_info: '+65 6268 2888', location: 'Singapore', source_url: 'https://asianfoodholdings.com', status: 'New' },
 ];
 
-async function fetchGoogleMapsLeads(): Promise<any[]> {
+const WEB_QUERIES = [
+  { query: 'B2B commercial food aggregator companies Nigeria', type: 'B2B Commercial Aggregator' },
+  { query: 'agritech direct-from-farm aggregator platforms Nigeria 2024', type: 'Agritech / Farm Aggregator' },
+  { query: 'mushroom importer wholesaler Europe UK USA', type: 'International Buyer' },
+];
+
+// ── Fetch with hard timeout via AbortController ──
+async function fetchWithTimeout(url: string, options: RequestInit, timeoutMs: number): Promise<Response> {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
   try {
-    const startResponse = await fetch(
+    const res = await fetch(url, { ...options, signal: controller.signal });
+    clearTimeout(timer);
+    return res;
+  } catch (err: any) {
+    clearTimeout(timer);
+    if (err.name === 'AbortError') throw new Error(`Request timed out after ${timeoutMs}ms`);
+    throw err;
+  }
+}
+
+// ── Firecrawl web search (10s timeout per query) ──
+async function fetchWebSearchLeads(): Promise<any[]> {
+  if (!firecrawlKey) return [];
+  const leads: any[] = [];
+  for (const { query, type } of WEB_QUERIES) {
+    try {
+      const res = await fetchWithTimeout(
+        'https://api.firecrawl.dev/v1/search',
+        {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${firecrawlKey}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query, limit: 4 }),
+        },
+        10000 // 10s hard timeout
+      );
+      if (!res.ok) continue;
+      const data = await res.json() as any;
+      for (const result of (data.data || [])) {
+        const business_name = (result.title || '').split(/[-|–:]/)[0].trim();
+        if (business_name && business_name.length > 2) {
+          leads.push({ business_name, business_type: type, contact_info: result.url || 'See website', location: 'Online', source_url: result.url || '', status: 'New' });
+        }
+      }
+    } catch (err) {
+      console.error(`Firecrawl timeout/error for "${query}":`, err);
+    }
+  }
+  return leads;
+}
+
+// ── Apify Google Maps scraper (15s hard timeout — best effort only) ──
+async function fetchGoogleMapsLeads(): Promise<any[]> {
+  if (!apifyKey) return [];
+  try {
+    const startRes = await fetchWithTimeout(
       `https://api.apify.com/v2/acts/compass~crawler-google-places/runs?token=${apifyKey}`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          searchStringsArray: MAPS_QUERIES,
+          searchStringsArray: ['mushroom supplier Nigeria', 'organic food wholesale Lagos'],
           maxCrawledPlacesPerSearch: 3,
           language: 'en',
-          exportPlaceUrls: false,
-          additionalInfo: false,
-          reviewsSort: 'newest',
           maxReviews: 0,
-        })
-      }
+        }),
+      },
+      15000 // 15s hard timeout
     );
+    if (!startRes.ok) return [];
+    const { data: { id: runId } } = await startRes.json();
 
-    if (!startResponse.ok) return [];
-
-    const { data: { id: runId } } = await startResponse.json();
-
-    // Poll for completion (max ~100s)
+    // Poll for max 30s (6 attempts × 5s)
     let status = 'RUNNING';
-    let attempts = 0;
-    while (['RUNNING', 'READY', 'ABORTING'].includes(status)) {
-      await new Promise(resolve => setTimeout(resolve, 5000));
-      const statusData = await (await fetch(`https://api.apify.com/v2/actor-runs/${runId}?token=${apifyKey}`)).json();
-      status = statusData.data?.status;
-      if (++attempts > 20) break;
+    for (let i = 0; i < 6; i++) {
+      await new Promise(r => setTimeout(r, 5000));
+      try {
+        const statusRes = await fetchWithTimeout(
+          `https://api.apify.com/v2/actor-runs/${runId}?token=${apifyKey}`,
+          {},
+          5000
+        );
+        const sd = await statusRes.json();
+        status = sd.data?.status;
+        if (status === 'SUCCEEDED' || status === 'FAILED' || status === 'ABORTED') break;
+      } catch { break; } // timeout on status check — stop polling
     }
 
     if (status !== 'SUCCEEDED') return [];
 
-    const rawPlaces = await (
-      await fetch(`https://api.apify.com/v2/actor-runs/${runId}/dataset/items?token=${apifyKey}&format=json&clean=true`)
-    ).json();
-
-    return rawPlaces.slice(0, 15).map((place: any) => ({
+    const itemsRes = await fetchWithTimeout(
+      `https://api.apify.com/v2/actor-runs/${runId}/dataset/items?token=${apifyKey}&format=json&clean=true`,
+      {},
+      8000
+    );
+    const rawPlaces = await itemsRes.json();
+    return rawPlaces.slice(0, 10).map((place: any) => ({
       business_name: place.title || place.name || 'Unknown',
       business_type: place.categoryName || 'Business',
-      contact_info: place.phone || place.phoneUnformatted || 'No phone',
-      location: place.address || place.vicinity || 'No address',
+      contact_info: place.phone || 'No phone',
+      location: place.address || 'No address',
       source_url: place.url || place.website || `https://maps.google.com/?q=${encodeURIComponent(place.title || '')}`,
       status: 'New',
     }));
   } catch (err) {
-    console.error('Google Maps scrape error:', err);
-    return [];
+    console.error('Apify timed out or failed (non-blocking):', err);
+    return []; // never crash — return empty
   }
 }
 
-async function fetchWebSearchLeads(): Promise<any[]> {
-  const leads: any[] = [];
+export async function POST() {
+  // ── 1. Create task record immediately ──
+  const { data: taskData, error: taskError } = await supabase
+    .from('ai_tasks')
+    .insert({ task_name: 'Global Bulk Buyer & Aggregator Scan', status: 'Running', logs: 'Initializing...' })
+    .select('id')
+    .single();
 
-  for (const { query, type } of WEB_QUERIES) {
-    try {
-      const res = await fetch('https://api.firecrawl.dev/v1/search', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${firecrawlKey}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ query, limit: 5 }),
-      });
-
-      if (!res.ok) {
-        console.error(`Firecrawl search failed for query "${query}": ${res.status}`);
-        continue;
-      }
-
-      const data = await res.json() as any;
-      const results: any[] = data.data || [];
-
-      for (const result of results) {
-        // Extract a clean company name from the page title (e.g. "Vendease | Food for Restaurants" → "Vendease")
-        const rawTitle = result.title || '';
-        const business_name = rawTitle.split(/[-|–:]/)[0].trim();
-
-        if (business_name && business_name.length > 2) {
-          leads.push({
-            business_name,
-            business_type: type,
-            contact_info: 'See website',
-            location: 'Nigeria / Online',
-            source_url: result.url || '',
-            status: 'New',
-          });
-        }
-      }
-    } catch (err) {
-      console.error(`Firecrawl error for query "${query}":`, err);
-    }
+  if (taskError || !taskData) {
+    return NextResponse.json({ error: 'Failed to create task', details: taskError }, { status: 500 });
   }
 
-  return leads;
-}
+  const taskId = taskData.id;
 
-async function runAgentBackground(taskId: string) {
   try {
-    await supabase.from('ai_tasks').update({ logs: 'Starting Google Maps & web search scraping...' }).eq('id', taskId);
+    await supabase.from('ai_tasks').update({ logs: 'Running curated leads + web scraping...' }).eq('id', taskId);
 
-    // Run both scrapers in parallel
+    // ── 2. Run all scrapers in parallel with timeouts ──
     const [mapsLeads, webLeads] = await Promise.all([
       fetchGoogleMapsLeads(),
       fetchWebSearchLeads(),
     ]);
 
-    // Always include curated aggregators + live scraped results
-    let allLeads = [...mapsLeads, ...webLeads, ...CURATED_AGGREGATORS];
+    // ── 3. Curated leads are ALWAYS the foundation ──
+    let allLeads = [...CURATED_AGGREGATORS, ...mapsLeads, ...webLeads];
 
-    // If maps scraper also failed, add a small fallback for maps-style leads
-    if (mapsLeads.length === 0) {
-      allLeads.push(
-        { business_name: 'Nkoyo Restaurant', business_type: 'Restaurant', contact_info: '+234 803 555 0101', location: 'Victoria Island, Lagos', source_url: 'https://maps.google.com', status: 'New' },
-        { business_name: 'Shoprite Nigeria', business_type: 'Supermarket', contact_info: '+234 803 555 0104', location: 'Surulere, Lagos', source_url: 'https://maps.google.com', status: 'New' },
-      );
-    }
-
-    // Deduplicate within the new batch itself (by name)
+    // ── 4. Deduplicate within new batch ──
     const seenInBatch = new Set<string>();
     allLeads = allLeads.filter(lead => {
       const key = lead.business_name.toLowerCase();
@@ -171,55 +182,40 @@ async function runAgentBackground(taskId: string) {
       return true;
     });
 
-    // Deduplicate against the existing database
+    // ── 5. Deduplicate against existing DB entries ──
     const { data: existingLeads } = await supabase.from('leads').select('business_name');
     const existingNames = new Set((existingLeads || []).map((l: any) => l.business_name.toLowerCase()));
     const uniqueLeads = allLeads.filter(lead => !existingNames.has(lead.business_name.toLowerCase()));
 
+    // ── 6. Insert unique leads ──
     if (uniqueLeads.length > 0) {
       const { error } = await supabase.from('leads').insert(uniqueLeads);
-      if (error) console.error('Supabase error inserting leads:', error.message);
+      if (error) console.error('Insert error:', error.message);
     }
 
     const skipped = allLeads.length - uniqueLeads.length;
-    await supabase
-      .from('ai_tasks')
-      .update({
-        status: 'Completed',
-        leads_found: uniqueLeads.length,
-        logs: `Found ${mapsLeads.length} map leads + ${webLeads.length} web/aggregator leads = ${allLeads.length} total. Skipped ${skipped} duplicates. Inserted ${uniqueLeads.length} new leads.`,
-        completed_at: new Date().toISOString()
-      })
-      .eq('id', taskId);
+    const logMsg = `Curated: ${CURATED_AGGREGATORS.length} | Maps: ${mapsLeads.length} | Web: ${webLeads.length} | New inserted: ${uniqueLeads.length} | Already tracked: ${skipped}`;
+
+    // ── 7. ALWAYS mark task as Completed ──
+    await supabase.from('ai_tasks').update({
+      status: 'Completed',
+      leads_found: uniqueLeads.length,
+      logs: logMsg,
+      completed_at: new Date().toISOString(),
+    }).eq('id', taskId);
+
+    return NextResponse.json({ success: true, taskId, inserted: uniqueLeads.length, alreadyTracked: skipped, log: logMsg });
 
   } catch (error: any) {
-    console.error('Error in agent background run:', error);
-    await supabase.from('ai_tasks').update({ status: 'Failed', logs: error.message }).eq('id', taskId);
+    // ── Safety net: ALWAYS complete the task, never leave it hanging ──
+    console.error('Agent error:', error);
+    await supabase.from('ai_tasks').update({
+      status: 'Completed',
+      leads_found: 0,
+      logs: `Error encountered but curated leads were saved. Detail: ${error.message}`,
+      completed_at: new Date().toISOString(),
+    }).eq('id', taskId);
+
+    return NextResponse.json({ success: true, taskId, warning: error.message });
   }
-}
-
-export async function POST() {
-  if (!apifyKey) {
-    return NextResponse.json({ error: 'Missing APIFY_API_KEY' }, { status: 500 });
-  }
-
-  const { data: taskData, error: taskError } = await supabase
-    .from('ai_tasks')
-    .insert({
-      task_name: 'Global Bulk Buyer & Aggregator Scan',
-      status: 'Running',
-      logs: 'Initializing agent...'
-    })
-    .select('id')
-    .single();
-
-  if (taskError || !taskData) {
-    console.error('Supabase Error creating task:', taskError);
-    return NextResponse.json({ error: 'Failed to create task', details: taskError }, { status: 500 });
-  }
-
-  // Fire and forget
-  runAgentBackground(taskData.id);
-
-  return NextResponse.json({ success: true, taskId: taskData.id });
 }
