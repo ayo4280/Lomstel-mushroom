@@ -74,52 +74,7 @@ export default function LoginPage() {
     }
   };
 
-  // Helper to quickly seed/login with demo accounts
-  const handleQuickLogin = async (demoRole: 'ADMIN' | 'FARM_WORKER' | 'BUYER') => {
-    setLoading(true);
-    setErrorMsg('');
-    
-    // We create standard emails for testing, e.g. admin@lomstel.com
-    const demoEmail = `${demoRole.toLowerCase()}@lomstel.com`;
-    const demoPass = '123456';
-    
-    try {
-      // Try logging in first
-      const { error: signInError } = await supabase.auth.signInWithPassword({
-        email: demoEmail,
-        password: demoPass
-      });
 
-      if (signInError) {
-        // If account doesn't exist, create it on the fly!
-        const { error: signUpError } = await supabase.auth.signUp({
-          email: demoEmail,
-          password: demoPass,
-          options: {
-            data: {
-              full_name: `Demo ${demoRole.charAt(0) + demoRole.slice(1).toLowerCase().replace('_', ' ')}`,
-              role: demoRole
-            }
-          }
-        });
-
-        if (signUpError) throw signUpError;
-        
-        // Login after signing up
-        const { error: retryError } = await supabase.auth.signInWithPassword({
-          email: demoEmail,
-          password: demoPass
-        });
-        if (retryError) throw retryError;
-      }
-      
-      router.push('/dashboard');
-    } catch (err: any) {
-      setErrorMsg(err.message || `Failed to start demo session for ${demoRole}`);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   return (
     <div style={{
@@ -369,62 +324,7 @@ export default function LoginPage() {
           </button>
         </form>
 
-        {/* Quick Demo Login Seeding Section */}
-        <div style={{ marginTop: '2.5rem', borderTop: '1px solid var(--color-earth-200)', paddingTop: '1.5rem' }}>
-          <p style={{ margin: '0 0 1rem 0', fontSize: '0.85rem', fontWeight: 700, color: 'var(--color-earth-500)', textTransform: 'uppercase', letterSpacing: '0.05em', textAlign: 'center' }}>
-            ⚡ Quick Role-Based Testing
-          </p>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '0.5rem' }}>
-            <button
-              onClick={() => handleQuickLogin('ADMIN')}
-              disabled={loading}
-              style={{
-                padding: '0.5rem',
-                fontSize: '0.8rem',
-                fontWeight: 700,
-                borderRadius: '8px',
-                border: '1px solid var(--color-forest-500)',
-                color: 'var(--color-forest-700)',
-                backgroundColor: 'var(--color-forest-100)',
-                cursor: 'pointer'
-              }}
-            >
-              🔑 Admin
-            </button>
-            <button
-              onClick={() => handleQuickLogin('FARM_WORKER')}
-              disabled={loading}
-              style={{
-                padding: '0.5rem',
-                fontSize: '0.8rem',
-                fontWeight: 700,
-                borderRadius: '8px',
-                border: '1px solid #2980B9',
-                color: '#2980B9',
-                backgroundColor: '#E8F4FD',
-                cursor: 'pointer'
-              }}
-            >
-              🌾 Worker
-            </button>
-            <button
-              onClick={() => handleQuickLogin('BUYER')}
-              disabled={loading}
-              style={{
-                padding: '0.5rem',
-                fontSize: '0.8rem',
-                fontWeight: 700,
-                borderRadius: '8px',
-                border: '1px solid var(--color-accent)',
-                color: 'var(--color-accent)',
-                backgroundColor: '#FDECEA',
-                cursor: 'pointer'
-              }}
-            >
-              🛒 Buyer
-            </button>
-          </div>
-        </div>
+
 
       </div>
     </div>
