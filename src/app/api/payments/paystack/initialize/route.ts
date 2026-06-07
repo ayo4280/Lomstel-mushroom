@@ -18,6 +18,9 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
+    const quantityKg = metadata?.quantity_kg ? Number(metadata.quantity_kg) : 1;
+    const productType = metadata?.product?.toLowerCase().includes('dry') ? 'DRY' : 'WET';
+
     // Insert order into DB
     const { data: order, error: dbError } = await supabase
       .from('payment_orders')
@@ -25,9 +28,9 @@ export async function POST(req: NextRequest) {
         buyer_id: user.id,
         buyer_email: user.email,
         buyer_name: user.user_metadata?.full_name || 'Buyer',
-        product_type: 'DRY', // Hardcoded for demo, normally from metadata
-        quantity_kg: metadata?.available ? parseInt(metadata.available) : 100,
-        price_per_kg: amount / (metadata?.available ? parseInt(metadata.available) : 100),
+        product_type: productType,
+        quantity_kg: quantityKg,
+        price_per_kg: amount / quantityKg,
         total_amount: amount,
         payment_provider: 'paystack',
         payment_status: 'pending'
