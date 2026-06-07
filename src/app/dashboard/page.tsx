@@ -51,8 +51,10 @@ export default function DashboardPage() {
         });
       }
 
-      // Seed dry stock with 2000kg surplus if DB is fresh
-      const finalDry = dry > 0 ? dry : 2000;
+      // Seed dry stock with 2000kg surplus if no dry harvests exist
+      const hasDryHarvest = (harvests || []).some((h: any) => h.harvest_type === 'DRY');
+      if (!hasDryHarvest) dry += 2000;
+      const finalDry = Math.max(0, dry);
       const finalWet = Math.max(0, wet);
 
       setTotalDry(finalDry);

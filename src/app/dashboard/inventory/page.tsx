@@ -46,9 +46,10 @@ export default function InventoryPage() {
       });
     }
 
-    // Seed dry stock with the 2000kg PRD surplus if no dry data yet
-    if (dry === 0 && (!products || products.length === 0) && (!harvests || !harvests.some((h: any) => h.harvest_type === 'DRY'))) {
-      dry = 2000;
+    // Seed dry stock with the 2000kg PRD surplus if no dry harvests exist
+    const hasDryHarvest = (harvests || []).some((h: any) => h.harvest_type === 'DRY');
+    if (!hasDryHarvest) {
+      dry += 2000;
     }
 
     setTotalWet(Math.max(0, wet));
