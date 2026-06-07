@@ -68,10 +68,9 @@ async function fetchStock(): Promise<Stock> {
     }
   });
 
-  // Seed dry stock with 2000kg if no dry data exists (matches Inventory logic)
-  const hasDryData = (harvests || []).some((h: any) => h.harvest_type === 'DRY') ||
-                     (products || []).some((p: any) => p.product_type === 'DRY');
-  if (dryKg === 0 && !hasDryData) dryKg = 2000;
+  // Seed dry stock with 2000kg if no dry harvests exist
+  const hasDryHarvest = (harvests || []).some((h: any) => h.harvest_type === 'DRY');
+  if (!hasDryHarvest) dryKg += 2000;
 
   return { wetKg: Math.max(0, wetKg), dryKg: Math.max(0, dryKg) };
 }
