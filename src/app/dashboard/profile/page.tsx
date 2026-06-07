@@ -39,11 +39,14 @@ export default function ProfilePage() {
     setIsSaving(true);
     try {
       // Update Auth metadata
-      await supabase.auth.updateUser({
+      const { error: authError } = await supabase.auth.updateUser({
         data: { full_name: editName }
       });
+      if (authError) throw authError;
+
       // Update public profiles table
-      await supabase.from('profiles').update({ full_name: editName }).eq('id', userProfile.id);
+      const { error: dbError } = await supabase.from('profiles').update({ display_name: editName }).eq('id', userProfile.id);
+      if (dbError) throw dbError;
       
       setUserProfile({ ...userProfile, name: editName });
       setIsEditing(false);

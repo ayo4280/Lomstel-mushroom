@@ -29,7 +29,8 @@ export default function LogisticsPage() {
         delivery_address: '14 Isaac John St, Ikeja GRA, Lagos',
         status: 'Processing'
       };
-      await supabase.from('deliveries').insert([mockOrder]);
+      const { error } = await supabase.from('deliveries').insert([mockOrder]);
+      if (error) console.error("Error inserting mock delivery:", error);
       fetchDeliveries();
     }
   };
@@ -67,7 +68,7 @@ export default function LogisticsPage() {
     if (!driverName) return;
     const driverPhone = prompt("Enter Driver Phone Number:");
     
-    await supabase
+    const { error } = await supabase
       .from('deliveries')
       .update({ 
         driver_name: driverName, 
@@ -76,13 +77,17 @@ export default function LogisticsPage() {
         estimated_delivery_date: new Date(Date.now() + 86400000).toISOString() // Tomorrow
       })
       .eq('id', id);
+      
+    if (error) alert("Failed to assign driver: " + error.message);
   };
 
   const markDelivered = async (id: string) => {
-    await supabase
+    const { error } = await supabase
       .from('deliveries')
       .update({ status: 'Delivered' })
       .eq('id', id);
+      
+    if (error) alert("Failed to mark delivered: " + error.message);
   };
 
   const getStatusColor = (status: string) => {
