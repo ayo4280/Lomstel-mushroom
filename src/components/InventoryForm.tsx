@@ -21,31 +21,39 @@ export default function InventoryForm({ onSuccess }: { onSuccess: () => void }) 
     setLoading(true);
     setSuccessMsg('');
 
-    if (isHarvest) {
-      // ADD: Log a new harvest (wet or dry)
-      await supabase.from('harvests').insert([{
-        weight: Number(weight),
-        grade,
-        moisture: isWet ? 85 : 10,
-        location: 'Main Hub',
-        status: 'SYNCED',
-        harvest_type: isWet ? 'WET' : 'DRY',
-      }]);
-      setSuccessMsg(`✓ ${isWet ? 'Wet' : 'Dry'} harvest of ${weight}kg recorded and added to stock.`);
-    } else {
-      // SUBTRACT: Log a sale (wet or dry)
-      await supabase.from('mushroom_products').insert([{
-        quantity_kg: -Math.abs(Number(weight)),
-        grade,
-        product_type: isWet ? 'WET' : 'DRY',
-        drying_method: isSale ? 'Sale Deduction' : 'N/A',
-      }]);
-      setSuccessMsg(`✓ ${isWet ? 'Wet' : 'Dry'} sale of ${weight}kg deducted from stock automatically.`);
+    try {
+      if (isHarvest) {
+        // ADD: Log a new harvest (wet or dry)
+        const { error } = await supabase.from('harvests').insert([{
+          weight: Number(weight),
+          grade,
+          moisture: isWet ? 85 : 10,
+          location: 'Main Hub',
+          status: 'SYNCED',
+          harvest_type: isWet ? 'WET' : 'DRY',
+        }]);
+        if (error) throw error;
+        setSuccessMsg(`✓ ${isWet ? 'Wet' : 'Dry'} harvest of ${weight}kg recorded and added to stock.`);
+      } else {
+        // SUBTRACT: Log a sale (wet or dry)
+        const { error } = await supabase.from('mushroom_products').insert([{
+          quantity_kg: -Math.abs(Number(weight)),
+          grade,
+          product_type: isWet ? 'WET' : 'DRY',
+          drying_method: isSale ? 'Sale Deduction' : 'N/A',
+        }]);
+        if (error) throw error;
+        setSuccessMsg(`✓ ${isWet ? 'Wet' : 'Dry'} sale of ${weight}kg deducted from stock automatically.`);
+      }
+      
+      setWeight('');
+      onSuccess();
+    } catch (err: any) {
+      console.error("Failed to record activity:", err);
+      alert(`Error saving to database: ${err.message || 'Unknown error'}`);
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
-    setWeight('');
-    onSuccess();
   };
 
   const btnStyle = (active: boolean, color: string) => ({
