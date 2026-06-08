@@ -29,19 +29,54 @@ export async function POST(req: NextRequest) {
     if (event.event === 'charge.success') {
       const { reference, amount, currency } = event.data;
 
-      // Direct update using service role key (bypasses RLS)
-      const { error } = await supabase
+      // 1. Mark order as paid
+      const { data: updatedOrder, error: updateError } = await supabase
         .from('payment_orders')
         .update({
           payment_status: 'paid',
           payment_provider: 'paystack',
+          currency: currency || 'NGN',
           notes: `Webhook verified reference: ${reference}`
         })
-        .eq('id', reference);
+        .eq('id', reference)
+        .select()
+        .single();
 
-      if (error) {
-        console.error('Failed to update order:', error);
+      if (updateError) {
+        console.error('Failed to update order:', updateError);
         return NextResponse.json({ error: 'DB update failed' }, { status: 500 });
+      }
+
+      // 2. Create a delivery record if one doesn't exist yet
+      // (the DB trigger handles this too, but this is a safety net for webhook-first scenarios)
+      if (updatedOrder) {
+        const { data: existingDelivery } = await supabase
+          .from('deliveries')
+          .select('id')
+          .eq('order_id', updatedOrder.id)
+          .single();
+
+        if (!existingDelivery) {
+          const { error: deliveryError } = await supabase
+            .from('deliveries')
+            .insert({
+              order_id: updatedOrder.id,
+              buyer_name: updatedOrder.buyer_name || 'Unknown Buyer',
+              buyer_email: updatedOrder.buyer_email,
+              delivery_address: 'Pending — Buyer to confirm address',
+              product_type: updatedOrder.product_type,
+              quantity_kg: updatedOrder.quantity_kg,
+              total_amount: updatedOrder.total_amount,
+              currency: updatedOrder.currency || 'NGN',
+              status: 'Processing',
+            });
+
+          if (deliveryError) {
+            console.error('Failed to create delivery record:', deliveryError);
+          } else {
+            console.log(`📦 Delivery created for order: ${updatedOrder.id}`);
+          }
+        }
       }
 
       console.log(`✅ Paystack payment verified: ${reference} - ${currency} ${amount / 100}`);
@@ -53,4 +88,3 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
-
