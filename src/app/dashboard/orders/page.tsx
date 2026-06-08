@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState, useCallback } from 'react';
 import { supabase } from '@/utils/supabase/client';
-import { ShoppingBag, CheckCircle, Clock, XCircle, TrendingUp, RefreshCw } from 'lucide-react';
+import { ShoppingBag, CheckCircle, Clock, XCircle, TrendingUp, RefreshCw, Trash2, BadgeCheck } from 'lucide-react';
 import { useSearchParams } from 'next/navigation';
 
 type Order = {
@@ -21,15 +21,16 @@ type Order = {
 };
 
 const statusConfig = {
-  paid:     { color: '#16a34a', bg: '#dcfce7', label: 'Paid',    icon: CheckCircle },
-  pending:  { color: '#d97706', bg: '#fef9c3', label: 'Pending', icon: Clock },
-  failed:   { color: '#dc2626', bg: '#fee2e2', label: 'Failed',  icon: XCircle },
-  refunded: { color: '#6b7280', bg: '#f3f4f6', label: 'Refunded',icon: RefreshCw },
+  paid:     { color: '#16a34a', bg: '#dcfce7', label: 'Paid',     icon: CheckCircle },
+  pending:  { color: '#d97706', bg: '#fef9c3', label: 'Pending',  icon: Clock },
+  failed:   { color: '#dc2626', bg: '#fee2e2', label: 'Failed',   icon: XCircle },
+  refunded: { color: '#6b7280', bg: '#f3f4f6', label: 'Refunded', icon: RefreshCw },
 };
 
 export default function OrdersPage() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [actionLoading, setActionLoading] = useState<string | null>(null);
   const [totalRevenue, setTotalRevenue] = useState({ ngn: 0, usd: 0 });
   const searchParams = useSearchParams();
   const paymentStatus = searchParams.get('payment');
@@ -41,7 +42,9 @@ export default function OrdersPage() {
       .select('*')
       .order('created_at', { ascending: false });
 
-    if (data) {
+    if (error) {
+      console.error('Error fetching orders:', error);
+    } else if (data) {
       setOrders(data);
       const ngn = data.filter(o => o.payment_status === 'paid' && o.currency === 'NGN').reduce((sum, o) => sum + o.total_amount, 0);
       const usd = data.filter(o => o.payment_status === 'paid' && o.currency === 'USD').reduce((sum, o) => sum + o.total_amount, 0);
@@ -52,7 +55,61 @@ export default function OrdersPage() {
 
   useEffect(() => { fetchOrders(); }, [fetchOrders]);
 
-  const paidOrders   = orders.filter(o => o.payment_status === 'paid').length;
+  // Manually mark a pending order as paid (e.g. bank transfer received)
+  const handleMarkPaid = async (order: Order) => {
+    const confirm = window.confirm(
+      `Mark this order as PAID?\n\n` +
+      `Buyer: ${order.buyer_name || order.buyer_email}\n` +
+      `Product: ${order.product_type === 'DRY' ? 'Dry Mushrooms' : 'Fresh Mushrooms'}\n` +
+      `Qty: ${order.quantity_kg} kg\n` +
+      `Amount: ${order.currency === 'NGN' ? '₦' : '$'}${order.total_amount.toLocaleString()}\n\n` +
+      `This will also create a delivery in Logistics.`
+    );
+    if (!confirm) return;
+
+    setActionLoading(order.id + '_pay');
+    const { error } = await supabase
+      .from('payment_orders')
+      .update({
+        payment_status: 'paid',
+        notes: `Manually marked as paid by admin on ${new Date().toLocaleDateString('en-GB')}`
+      })
+      .eq('id', order.id);
+
+    if (error) {
+      alert('Failed to update order: ' + error.message);
+    } else {
+      await fetchOrders();
+    }
+    setActionLoading(null);
+  };
+
+  // Delete an abandoned/cancelled order
+  const handleDelete = async (order: Order) => {
+    const confirm = window.confirm(
+      `Delete this order permanently?\n\n` +
+      `Buyer: ${order.buyer_name || order.buyer_email}\n` +
+      `Product: ${order.product_type === 'DRY' ? 'Dry Mushrooms' : 'Fresh Mushrooms'}\n` +
+      `Amount: ${order.currency === 'NGN' ? '₦' : '$'}${order.total_amount.toLocaleString()}\n\n` +
+      `This cannot be undone.`
+    );
+    if (!confirm) return;
+
+    setActionLoading(order.id + '_del');
+    const { error } = await supabase
+      .from('payment_orders')
+      .delete()
+      .eq('id', order.id);
+
+    if (error) {
+      alert('Failed to delete order: ' + error.message);
+    } else {
+      await fetchOrders();
+    }
+    setActionLoading(null);
+  };
+
+  const paidOrders    = orders.filter(o => o.payment_status === 'paid').length;
   const pendingOrders = orders.filter(o => o.payment_status === 'pending').length;
 
   return (
@@ -83,11 +140,11 @@ export default function OrdersPage() {
       {/* Stats */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.5rem' }}>
         {[
-          { label: 'Total Orders', value: orders.length, icon: ShoppingBag, color: '#6366f1', bg: '#eef2ff' },
-          { label: 'Paid Orders', value: paidOrders, icon: CheckCircle, color: '#16a34a', bg: '#dcfce7' },
-          { label: 'Pending', value: pendingOrders, icon: Clock, color: '#d97706', bg: '#fef9c3' },
-          { label: 'Revenue (NGN)', value: `₦${totalRevenue.ngn.toLocaleString()}`, icon: TrendingUp, color: '#0f766e', bg: '#ccfbf1' },
-          { label: 'Revenue (USD)', value: `$${totalRevenue.usd.toLocaleString()}`, icon: TrendingUp, color: '#1d4ed8', bg: '#dbeafe' },
+          { label: 'Total Orders',  value: orders.length,                                    icon: ShoppingBag, color: '#6366f1', bg: '#eef2ff' },
+          { label: 'Paid Orders',   value: paidOrders,                                        icon: CheckCircle, color: '#16a34a', bg: '#dcfce7' },
+          { label: 'Pending',       value: pendingOrders,                                     icon: Clock,       color: '#d97706', bg: '#fef9c3' },
+          { label: 'Revenue (NGN)', value: `₦${totalRevenue.ngn.toLocaleString()}`,           icon: TrendingUp,  color: '#0f766e', bg: '#ccfbf1' },
+          { label: 'Revenue (USD)', value: `$${totalRevenue.usd.toLocaleString()}`,           icon: TrendingUp,  color: '#1d4ed8', bg: '#dbeafe' },
         ].map((stat) => {
           const Icon = stat.icon;
           return (
@@ -126,16 +183,21 @@ export default function OrdersPage() {
                 <th style={{ padding: '0.75rem 1rem' }}>Provider</th>
                 <th style={{ padding: '0.75rem 1rem' }}>Status</th>
                 <th style={{ padding: '0.75rem 1rem' }}>Date</th>
+                <th style={{ padding: '0.75rem 1rem' }}>Actions</th>
               </tr>
             </thead>
             <tbody>
               {orders.map(order => {
                 const status = statusConfig[order.payment_status] || statusConfig.pending;
                 const StatusIcon = status.icon;
+                const isPending = order.payment_status === 'pending';
+                const isPayLoading = actionLoading === order.id + '_pay';
+                const isDelLoading = actionLoading === order.id + '_del';
+
                 return (
-                  <tr key={order.id} style={{ borderBottom: '1px solid rgba(0,0,0,0.04)' }}>
+                  <tr key={order.id} style={{ borderBottom: '1px solid rgba(0,0,0,0.04)', backgroundColor: isPending ? 'rgba(253,246,178,0.15)' : 'transparent' }}>
                     <td style={{ padding: '1rem' }}>
-                      <div style={{ fontWeight: 600, color: 'var(--color-earth-900)', fontSize: '0.95rem' }}>{order.buyer_name}</div>
+                      <div style={{ fontWeight: 600, color: 'var(--color-earth-900)', fontSize: '0.95rem' }}>{order.buyer_name || 'Buyer'}</div>
                       <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{order.buyer_email}</div>
                     </td>
                     <td style={{ padding: '1rem' }}>
@@ -158,6 +220,53 @@ export default function OrdersPage() {
                     </td>
                     <td style={{ padding: '1rem', fontSize: '0.85rem', color: 'var(--text-muted)', whiteSpace: 'nowrap' }}>
                       {new Date(order.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
+                    </td>
+
+                    {/* Action buttons — only shown on pending orders */}
+                    <td style={{ padding: '1rem' }}>
+                      {isPending ? (
+                        <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'nowrap' }}>
+                          {/* Mark as Paid */}
+                          <button
+                            onClick={() => handleMarkPaid(order)}
+                            disabled={!!actionLoading}
+                            title="Mark as Paid — creates a delivery in Logistics"
+                            style={{
+                              display: 'inline-flex', alignItems: 'center', gap: '0.35rem',
+                              backgroundColor: '#dcfce7', color: '#16a34a',
+                              border: '1px solid #86efac', borderRadius: '8px',
+                              padding: '0.4rem 0.75rem', fontSize: '0.8rem', fontWeight: 700,
+                              cursor: actionLoading ? 'not-allowed' : 'pointer',
+                              opacity: actionLoading ? 0.6 : 1,
+                              whiteSpace: 'nowrap', transition: 'all 0.15s'
+                            }}
+                          >
+                            <BadgeCheck size={14} />
+                            {isPayLoading ? 'Saving…' : 'Mark Paid'}
+                          </button>
+
+                          {/* Delete */}
+                          <button
+                            onClick={() => handleDelete(order)}
+                            disabled={!!actionLoading}
+                            title="Delete abandoned order"
+                            style={{
+                              display: 'inline-flex', alignItems: 'center', gap: '0.35rem',
+                              backgroundColor: '#fee2e2', color: '#dc2626',
+                              border: '1px solid #fca5a5', borderRadius: '8px',
+                              padding: '0.4rem 0.75rem', fontSize: '0.8rem', fontWeight: 700,
+                              cursor: actionLoading ? 'not-allowed' : 'pointer',
+                              opacity: actionLoading ? 0.6 : 1,
+                              whiteSpace: 'nowrap', transition: 'all 0.15s'
+                            }}
+                          >
+                            <Trash2 size={14} />
+                            {isDelLoading ? 'Deleting…' : 'Delete'}
+                          </button>
+                        </div>
+                      ) : (
+                        <span style={{ color: 'var(--text-muted)', fontSize: '0.8rem' }}>—</span>
+                      )}
                     </td>
                   </tr>
                 );
